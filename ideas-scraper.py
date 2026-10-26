@@ -1,14 +1,33 @@
+import sys
+from types import ModuleType
+
+# Universal mock for mcp and mcp.types to bypass LiteLLM internal imports
+class MagicMockType(ModuleType):
+    def __getattr__(self, name):
+        return object
+
+mcp_mock = MagicMockType("mcp")
+mcp_types_mock = MagicMockType("mcp.types")
+
+sys.modules["mcp"] = mcp_mock
+sys.modules["mcp.types"] = mcp_types_mock
+
 import os
 import json
 import urllib.request
 import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.tools import tool
 
 # Set up xAI Grok LLM
 grok_llm = LLM(
-    model="xai/grok-2",
+    model=os.getenv("MODEL"),
+    base_url=os.getenv("XAI_API_BASE"),
     api_key=os.getenv("XAI_API_KEY")
 )
 
