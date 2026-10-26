@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memora - Persistent Memory for AI Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>body { font-family: system-ui, -apple-system, sans-serif; }</style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <nav class="border-b border-zinc-800">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-brain text-white"></i></div>
+                <span class="font-semibold text-xl">Memora</span>
+            </div>
+            <div class="flex items-center gap-8 text-sm">
+                <a href="#features" class="hover:text-zinc-400 transition">Features</a>
+                <a href="#pricing" class="hover:text-zinc-400 transition">Pricing</a>
+                <button onclick="showWaitlist()" class="px-4 py-2 bg-white text-zinc-950 rounded-lg font-medium text-sm hover:bg-zinc-200 transition">Join Waitlist</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
+        <div class="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-1 text-sm mb-6">
+            <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            Now in private beta
+        </div>
+        <h1 class="text-6xl font-semibold tracking-tighter mb-4">Persistent memory<br>for your AI agents</h1>
+        <p class="text-xl text-zinc-400 max-w-2xl mx-auto mb-8">Plug long-term, searchable memory into Cursor, Claude & Copilot. Retain context across sessions without token bloat.</p>
+        <div class="flex gap-4 justify-center">
+            <button onclick="showWaitlist()" class="px-8 py-3.5 bg-white text-zinc-950 rounded-2xl font-semibold hover:bg-zinc-100 transition flex items-center gap-2">Join the waitlist <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="px-8 py-3.5 border border-zinc-700 hover:bg-zinc-900 rounded-2xl font-semibold transition">Watch demo</button>
+        </div>
+    </section>
+
+    <section id="features" class="max-w-7xl mx-auto px-6 py-16 border-t border-zinc-800">
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <i class="fa-solid fa-compress text-violet-400 text-3xl mb-6"></i>
+                <h3 class="font-semibold text-xl mb-2">Automatic Compression</h3>
+                <p class="text-zinc-400">Smart summarization keeps only what matters across sessions and projects.</p>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <i class="fa-solid fa-folder-tree text-violet-400 text-3xl mb-6"></i>
+                <h3 class="font-semibold text-xl mb-2">Project Memory Vaults</h3>
+                <p class="text-zinc-400">Isolated, encrypted memory stores per project with one-click retrieval API.</p>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <i class="fa-solid fa-shield-halved text-violet-400 text-3xl mb-6"></i>
+                <h3 class="font-semibold text-xl mb-2">Privacy-First Local Mode</h3>
+                <p class="text-zinc-400">Run entirely on your machine. Zero data leaves your environment.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="max-w-5xl mx-auto px-6 py-16">
+        <h2 class="text-center text-4xl font-semibold tracking-tight mb-10">Simple pricing</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="text-sm text-zinc-500">Starter</div>
+                <div class="mt-4 text-5xl font-semibold">$29<span class="text-xl font-normal text-zinc-500">/mo</span></div>
+                <ul class="mt-8 space-y-3 text-sm">
+                    <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> 5 projects</li>
+                    <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> 50k context tokens</li>
+                </ul>
+            </div>
+            <div class="bg-zinc-900 border border-violet-600 rounded-3xl p-8 relative">
+                <div class="absolute -top-3 right-6 bg-violet-600 text-xs px-3 py-1 rounded-full">Popular</div>
+                <div class="text-sm text-zinc-500">Pro</div>
+                <div class="mt-4 text-5xl font-semibold">$79<span class="text-xl font-normal text-zinc-500">/mo</span></div>
+                <ul class="mt-8 space-y-3 text-sm">
+                    <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Unlimited projects</li>
+                    <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> 500k tokens + API</li>
+                </ul>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="text-sm text-zinc-500">Team</div>
+                <div class="mt-4 text-5xl font-semibold">$199<span class="text-xl font-normal text-zinc-500">/mo</span></div>
+                <ul class="mt-8 space-y-3 text-sm">
+                    <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Shared vaults + SSO</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div id="waitlist-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-8 w-full max-w-md mx-4">
+            <h3 class="text-2xl font-semibold mb-2">Join the Memora waitlist</h3>
+            <p class="text-zinc-400 mb-6">Be first to access the private beta.</p>
+            <form id="waitlist-form" onsubmit="submitWaitlist(event)">
+                <input type="email" id="email" required placeholder="you@company.com" class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-5 py-3.5 text-sm focus:outline-none focus:border-violet-600">
+                <button type="submit" class="mt-3 w-full bg-white text-zinc-950 py-3.5 rounded-2xl font-semibold">Request access</button>
+            </form>
+            <div id="success-message" class="hidden mt-4 text-emerald-400 text-center text-sm">Thanks! We'll be in touch soon.</div>
+        </div>
+    </div>
+
+    <script>
+        function showWaitlist() {
+            document.getElementById('waitlist-modal').classList.remove('hidden');
+            document.getElementById('waitlist-modal').classList.add('flex');
+        }
+        function submitWaitlist(e) {
+            e.preventDefault();
+            const form = document.getElementById('waitlist-form');
+            const success = document.getElementById('success-message');
+            form.style.display = 'none';
+            success.classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('waitlist-modal').classList.add('hidden');
+                document.getElementById('waitlist-modal').classList.remove('flex');
+                form.style.display = 'block';
+                success.classList.add('hidden');
+                form.reset();
+            }, 2200);
+        }
+    </script>
+</body>
+</html>

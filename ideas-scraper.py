@@ -112,10 +112,10 @@ def save_and_push_idea(folder_name: str, html_content: str) -> str:
 
         # 2. GitHub Push
         github_token = os.getenv("GITHUB_TOKEN")
-        github_repo_name = os.getenv("GITHUB_REPO")  # Format: "username/repo-name"
+        github_repo_name = os.getenv("GITHUB_REPO_NAME")  # Format: "username/repo-name"
         
         if not github_token or not github_repo_name:
-            return f"Saved locally to {local_file_path}, but GITHUB_TOKEN or GITHUB_REPO is missing in .env."
+            return f"Saved locally to {local_file_path}, but GITHUB_TOKEN or GITHUB_REPO_NAME is missing in .env."
 
         gh = Github(github_token)
         repo = gh.get_repo(github_repo_name)
