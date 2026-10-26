@@ -32,165 +32,116 @@ grok_llm = LLM(
 )
 
 # ---------------------------------------------------------------------------
-# 1. SCRAPER TOOLS & GITHUB SAVER TOOL
+# 1. DEFINE TOOLS FOR READING & REPORTING
 # ---------------------------------------------------------------------------
 
-@tool("Reddit Pain-Point Scraper")
-def scrape_reddit(subreddit: str = "SaaS") -> str:
-    """Scrapes recent posts from target subreddits to find product requests and user pain points."""
-    url = f"https://www.reddit.com/r/{subreddit}/new.json?limit=25"
-    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+@tool("Fetch Local Ideas Folder")
+def list_local_ideas() -> str:
+    """Reads all generated ideas and landing page summaries from the local `ideas/` directory."""
+    ideas_dir = "ideas"
+    if not os.path.exists(ideas_dir):
+        return "No local `ideas/` directory found. Please run ideas-scraper.py first."
+
+    ideas_summary = []
+    for folder in os.listdir(ideas_dir):
+        folder_path = os.path.join(ideas_dir, folder)
+        if os.path.isdir(folder_path):
+            index_path = os.path.join(folder_path, "index.html")
+            if os.path.exists(index_path):
+                with open(index_path, "r", encoding="utf-8") as f:
+                    content = f.read()[:500]  # Read header/hero context
+                ideas_summary.append(f"### Slug: {folder}\nHTML Preview:\n{content}\n")
+
+    return "\n---\n".join(ideas_summary) if ideas_summary else "No ideas found in directory."
+
+
+@tool("Save Validation Matrix Report")
+def save_validation_report(report_md: str) -> str:
+    """Saves the final validation report locally to `ideas_validation_report.md` and pushes it to GitHub."""
+    report_filename = "ideas_validation_report.md"
     
+    # 1. Local Save
+    with open(report_filename, "w", encoding="utf-8") as f:
+        f.write(report_md)
+
+    # 2. GitHub Push
+    github_token = os.getenv("GITHUB_TOKEN")
+    github_repo_name = os.getenv("GITHUB_REPO")
+
+    if not github_token or not github_repo_name:
+        return f"Report saved locally to `{report_filename}` (GitHub sync skipped: missing credentials)."
+
     try:
-        with urllib.request.urlopen(req) as response:
-            data = json.loads(response.read().decode())
-            posts = data['data']['children']
-            results = []
-            for post in posts:
-                title = post['data']['title']
-                text = post['data']['selftext'][:250]
-                results.append(f"- **Reddit Title:** {title}\n  **Details:** {text}\n")
-            return "\n".join(results) if results else "No posts found."
-    except Exception as e:
-        return f"Error scraping Reddit: {str(e)}"
-
-
-@tool("Hacker News Scraper")
-def scrape_hacker_news(query: str = "Ask HN: What tools") -> str:
-    """Scrapes top stories and 'Ask HN' discussions from Hacker News via official Algolia API."""
-    url = f"https://hn.algolia.com/api/v1/search_by_date?query={query}&tags=story&hitsPerPage=20"
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code == 200:
-            hits = response.json().get('hits', [])
-            results = []
-            for item in hits:
-                title = item.get('title', 'No Title')
-                story_url = item.get('url', item.get('story_url', 'No URL'))
-                points = item.get('points', 0)
-                results.append(f"- **HN Post:** {title} (Points: {points})\n  **Link:** {story_url}\n")
-            return "\n".join(results) if results else "No Hacker News posts found."
-        return f"Hacker News API returned status {response.status_code}"
-    except Exception as e:
-        return f"Error scraping Hacker News: {str(e)}"
-
-
-@tool("Product Hunt Scraper")
-def scrape_product_hunt() -> str:
-    """Scrapes current trending products from Product Hunt RSS feed to identify market gaps."""
-    url = "https://www.producthunt.com/feed"
-    try:
-        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.content, 'xml')
-            entries = soup.find_all('entry')[:15]
-            results = []
-            for entry in entries:
-                title = entry.title.text if entry.title else "No Title"
-                content = entry.summary.text[:200] if entry.summary else "No Summary"
-                results.append(f"- **Product Hunt:** {title}\n  **Summary:** {content}\n")
-            return "\n".join(results) if results else "No Product Hunt items found."
-        return f"Product Hunt RSS returned status {response.status_code}"
-    except Exception as e:
-        return f"Error scraping Product Hunt: {str(e)}"
-
-
-@tool("Save Landing Page and Sync to GitHub")
-def save_and_push_idea(folder_name: str, html_content: str) -> str:
-    """
-    Saves an index.html landing page inside `ideas/<folder_name>/index.html` 
-    both on the local workstation and pushes the file directly to the GitHub repository.
-    """
-    try:
-        # 1. Local Filesystem Save
-        local_dir = os.path.join("ideas", folder_name)
-        os.makedirs(local_dir, exist_ok=True)
-        local_file_path = os.path.join(local_dir, "index.html")
-        
-        with open(local_file_path, "w", encoding="utf-8") as f:
-            f.write(html_content)
-
-        # 2. GitHub Push
-        github_token = os.getenv("GITHUB_TOKEN")
-        github_repo_name = os.getenv("GITHUB_REPO_NAME")  # Format: "username/repo-name"
-        
-        if not github_token or not github_repo_name:
-            return f"Saved locally to {local_file_path}, but GITHUB_TOKEN or GITHUB_REPO_NAME is missing in .env."
-
         gh = Github(github_token)
         repo = gh.get_repo(github_repo_name)
-        repo_file_path = f"ideas/{folder_name}/index.html"
-        commit_message = f"Add landing page MVP for idea: {folder_name}"
-
+        
         try:
-            # Check if file exists on GitHub to update, or create new
-            contents = repo.get_contents(repo_file_path)
-            repo.update_file(contents.path, commit_message, html_content, contents.sha)
-            status_msg = "Updated existing file on GitHub."
+            contents = repo.get_contents(report_filename)
+            repo.update_file(contents.path, "Update Market Validation Report", report_md, contents.sha)
+            status = "Updated existing report on GitHub."
         except Exception:
-            repo.create_file(repo_file_path, commit_message, html_content)
-            status_msg = "Created new file on GitHub."
+            repo.create_file(report_filename, "Add Market Validation Report", report_md)
+            status = "Created new report on GitHub."
 
-        return f"Successfully saved locally at `{local_file_path}` and synced to GitHub (`{repo_file_path}`): {status_msg}"
+        return f"Report saved locally and pushed to GitHub (`{report_filename}`): {status}"
     except Exception as e:
-        return f"Saved locally to {folder_name}/index.html, but GitHub sync failed: {str(e)}"
+        return f"Saved locally to `{report_filename}`, but GitHub push failed: {str(e)}"
 
 # ---------------------------------------------------------------------------
-# 2. AGENT DEFINITIONS
+# 2. DEFINE AGENTS
 # ---------------------------------------------------------------------------
 
-idea_hunter = Agent(
-    role="Trend & Problem Hunter",
-    goal="Scrape Reddit, Hacker News, and Product Hunt to discover user pain points and pick 10 distinct MVP business ideas.",
+market_validator = Agent(
+    role="Market & Monetization Analyst",
+    goal="Evaluate buyer willingness-to-pay, market demand, and pricing potential for all the scraped ideas.",
     backstory=(
-        "You are an expert market analyst who identifies high-potential software gaps online. "
-        "You extract 10 separate actionable product ideas that can be validated with landing pages."
+        "You are a SaaS market analyst. You analyze customer pain severity, evaluate B2B/B2C willingness to pay, "
+        "and assign market interest scores based on economic value and problem urgency."
     ),
-    tools=[scrape_reddit, scrape_hacker_news, scrape_product_hunt],
+    tools=[list_local_ideas],
     llm=grok_llm,
     verbose=True
 )
 
-developer_agent = Agent(
-    role="Lead Web Developer",
-    goal="Generate production-ready HTML index files for all 10 business ideas and save them to the repository.",
+tech_estimator = Agent(
+    role="Technical Lead & Cost Estimator",
+    goal="Determine build difficulty, developer time, and monthly infrastructure running costs (LLMs, databases, hosting).",
     backstory=(
-        "You write clean HTML5, Tailwind CSS, and embedded JavaScript waitlist forms. "
-        "You save each generated page into its designated GitHub/local path using your tool."
+        "You are a Cloud Solutions Architect and Full-Stack Lead. You calculate implementation difficulty, "
+        "estimate MVP dev hours, and break down expected API/hosting operating costs."
     ),
-    tools=[save_and_push_idea],
     llm=grok_llm,
     verbose=True
 )
 
 # ---------------------------------------------------------------------------
-# 3. TASK DEFINITIONS
+# 3. DEFINE TASKS
 # ---------------------------------------------------------------------------
 
-task_find_10_ideas = Task(
+task_market_analysis = Task(
     description=(
-        "Run all scraper tools across Reddit, Hacker News, and Product Hunt. "
-        "Analyze real community complaints, feature requests, and gaps. "
-        "Select exactly 10 distinct MVP business concepts. "
-        "For each idea, output: \n"
-        "1. Unique folder slug (e.g., `ai-podcast-summarizer`)\n"
-        "2. Product Name & Value Proposition\n"
-        "3. Core Target Audience & Key Features\n"
+        "1. Call `list_local_ideas` to load all the scraped product ideas.\n"
+        "2. For each idea, evaluate:\n"
+        "   - **Market Interest Score (0-100)**\n"
+        "   - **Willingness to Pay**: Is the target market willing to pay? Estimated monthly price range (e.g., $19/mo or $99/mo B2B).\n"
+        "   - **Target Customer Segment & Urgency**\n"
     ),
-    expected_output="A list of 10 fully scoped business concepts with folder slugs.",
-    agent=idea_hunter
+    expected_output="A structured market valuation for all the concepts found.",
+    agent=market_validator
 )
 
-task_build_10_pages = Task(
+task_tech_and_ranking = Task(
     description=(
-        "For EACH of the 10 business ideas identified by the Idea Hunter: \n"
-        "1. Design a complete, beautiful HTML landing page using CDN Tailwind CSS (`<script src='https://cdn.tailwindcss.com'></script>`).\n"
-        "2. Include a hero section, feature grid, pricing tier preview, and an interactive waitlist email capture form.\n"
-        "3. Call the `Save Landing Page and Sync to GitHub` tool for EACH idea, passing its slug (folder_name) and full `index.html` string.\n"
-        "Ensure all 10 ideas are saved in `ideas/<folder_slug>/index.html`."
+        "1. Combine market evaluations with technical architecture estimates for each idea.\n"
+        "2. For each idea, detail:\n"
+        "   - **Build Difficulty (1-10 Scale)**\n"
+        "   - **Est. MVP Development Time** (e.g., 8 hours, 3 days, 2 weeks)\n"
+        "   - **Est. Monthly Running Costs** (Breakdown: Cloud hosting, database, LLM API calls per 1k users)\n"
+        "3. Rank all the scraped ideas from #1 (Highest ROI / Easiest Win) to lowest.\n"
+        "4. Call `save_validation_report` to write `ideas_validation_report.md` locally and push to GitHub."
     ),
-    expected_output="Confirmation that all 10 index.html files have been written locally and pushed to GitHub.",
-    agent=developer_agent
+    expected_output="A ranked markdown report containing full market, tech, difficulty, and cost metrics saved to GitHub.",
+    agent=tech_estimator
 )
 
 # ---------------------------------------------------------------------------
@@ -198,13 +149,13 @@ task_build_10_pages = Task(
 # ---------------------------------------------------------------------------
 
 swarm = Crew(
-    agents=[idea_hunter, developer_agent],
-    tasks=[task_find_10_ideas, task_build_10_pages],
+    agents=[market_validator, tech_estimator],
+    tasks=[task_market_analysis, task_tech_and_ranking],
     process=Process.sequential,
     verbose=True
 )
 
 if __name__ == "__main__":
     result = swarm.kickoff()
-    print("\n\n================ SWARM OUTPUT ================\n")
+    print("\n\n================ VALIDATION REPORT ================\n")
     print(result)

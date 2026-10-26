@@ -32,13 +32,13 @@ grok_llm = LLM(
 )
 
 # ---------------------------------------------------------------------------
-# 1. SCRAPER TOOLS & GITHUB SAVER TOOL
+# 1. ENHANCED SCRAPERS WITH PAIN-POINT FILTERING
 # ---------------------------------------------------------------------------
 
-@tool("Reddit Pain-Point Scraper")
-def scrape_reddit(subreddit: str = "SaaS") -> str:
-    """Scrapes recent posts from target subreddits to find product requests and user pain points."""
-    url = f"https://www.reddit.com/r/{subreddit}/new.json?limit=25"
+@tool("High-Quality Reddit Pain-Point Scraper")
+def scrape_reddit_quality(subreddit: str = "SaaS") -> str:
+    """Scrapes Reddit for posts containing explicit user complaints, tool requests, or workflows that suck."""
+    url = f"https://www.reddit.com/r/{subreddit}/search.json?q=wish+there+was+OR+alternative+to+OR+hate+when+OR+looking+for+tool&restrict_sr=1&sort=relevance&limit=25"
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
     
     try:
@@ -47,49 +47,64 @@ def scrape_reddit(subreddit: str = "SaaS") -> str:
             posts = data['data']['children']
             results = []
             for post in posts:
-                title = post['data']['title']
-                text = post['data']['selftext'][:250]
-                results.append(f"- **Reddit Title:** {title}\n  **Details:** {text}\n")
-            return "\n".join(results) if results else "No posts found."
+                pdata = post['data']
+                # Skip pinned posts, empty text, or auto-mod threads
+                if pdata.get('stickied') or not pdata.get('selftext') or len(pdata.get('selftext')) < 40:
+                    continue
+                title = pdata['title']
+                text = pdata['selftext'][:400].replace('\n', ' ')
+                score = pdata.get('score', 0)
+                comments = pdata.get('num_comments', 0)
+                results.append(f"### [Reddit - r/{subreddit}] {title} (Upvotes: {score}, Comments: {comments})\nPain Detail: {text}\n")
+            
+            return "\n".join(results[:12]) if results else "No actionable pain points found on Reddit."
     except Exception as e:
         return f"Error scraping Reddit: {str(e)}"
 
 
-@tool("Hacker News Scraper")
-def scrape_hacker_news(query: str = "Ask HN: What tools") -> str:
-    """Scrapes top stories and 'Ask HN' discussions from Hacker News via official Algolia API."""
-    url = f"https://hn.algolia.com/api/v1/search_by_date?query={query}&tags=story&hitsPerPage=20"
+@tool("High-Quality Hacker News Scraper")
+def scrape_hacker_news_quality(query: str = "Ask HN") -> str:
+    """Scrapes Hacker News discussions for real user complaints, software gaps, and manual workflow complaints."""
+    url = f"https://hn.algolia.com/api/v1/search?query={query}&tags=story&numericFilters=num_comments>10&hitsPerPage=20"
     try:
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
             hits = response.json().get('hits', [])
             results = []
             for item in hits:
-                title = item.get('title', 'No Title')
-                story_url = item.get('url', item.get('story_url', 'No URL'))
+                title = item.get('title', '')
+                num_comments = item.get('num_comments', 0)
                 points = item.get('points', 0)
-                results.append(f"- **HN Post:** {title} (Points: {points})\n  **Link:** {story_url}\n")
-            return "\n".join(results) if results else "No Hacker News posts found."
+                story_url = item.get('url', '')
+                
+                # Filter for problem-focused threads
+                if any(kw in title.lower() for kw in ['ask hn', 'why is', 'what do you use', 'alternative', 'how to']):
+                    results.append(f"### [Hacker News] {title} (Points: {points}, Comments: {num_comments})\nLink: {story_url}\n")
+            
+            return "\n".join(results[:10]) if results else "No high-comment HN discussions found."
         return f"Hacker News API returned status {response.status_code}"
     except Exception as e:
         return f"Error scraping Hacker News: {str(e)}"
 
 
-@tool("Product Hunt Scraper")
-def scrape_product_hunt() -> str:
-    """Scrapes current trending products from Product Hunt RSS feed to identify market gaps."""
+@tool("Product Hunt Gap Scraper")
+def scrape_product_hunt_quality() -> str:
+    """Scrapes top trending products from Product Hunt RSS feed to find gaps and derivative software concepts."""
     url = "https://www.producthunt.com/feed"
     try:
         response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'xml')
-            entries = soup.find_all('entry')[:15]
+            entries = soup.find_all('entry')[:20]
             results = []
             for entry in entries:
-                title = entry.title.text if entry.title else "No Title"
-                content = entry.summary.text[:200] if entry.summary else "No Summary"
-                results.append(f"- **Product Hunt:** {title}\n  **Summary:** {content}\n")
-            return "\n".join(results) if results else "No Product Hunt items found."
+                title = entry.title.text if entry.title else ""
+                summary = entry.summary.text if entry.summary else ""
+                # Clean up HTML tags in summary
+                clean_summary = BeautifulSoup(summary, "html.parser").get_text()[:300]
+                if len(clean_summary) > 50:
+                    results.append(f"### [Product Hunt Launch] {title}\nSummary: {clean_summary}\n")
+            return "\n".join(results[:10]) if results else "No Product Hunt items found."
         return f"Product Hunt RSS returned status {response.status_code}"
     except Exception as e:
         return f"Error scraping Product Hunt: {str(e)}"
@@ -97,13 +112,13 @@ def scrape_product_hunt() -> str:
 
 @tool("Save Landing Page and Sync to GitHub")
 def save_and_push_idea(folder_name: str, html_content: str) -> str:
-    """
-    Saves an index.html landing page inside `ideas/<folder_name>/index.html` 
-    both on the local workstation and pushes the file directly to the GitHub repository.
-    """
+    """Saves an index.html landing page inside `ideas/<folder_name>/index.html` locally and on GitHub."""
     try:
-        # 1. Local Filesystem Save
-        local_dir = os.path.join("ideas", folder_name)
+        # Sanitize folder name slug
+        clean_slug = re.sub(r'[^a-z0-9\-]', '', folder_name.lower().replace(' ', '-'))
+        
+        # 1. Local Save
+        local_dir = os.path.join("ideas", clean_slug)
         os.makedirs(local_dir, exist_ok=True)
         local_file_path = os.path.join(local_dir, "index.html")
         
@@ -112,85 +127,116 @@ def save_and_push_idea(folder_name: str, html_content: str) -> str:
 
         # 2. GitHub Push
         github_token = os.getenv("GITHUB_TOKEN")
-        github_repo_name = os.getenv("GITHUB_REPO_NAME")  # Format: "username/repo-name"
+        github_repo_name = os.getenv("GITHUB_REPO_NAME")
         
         if not github_token or not github_repo_name:
-            return f"Saved locally to {local_file_path}, but GITHUB_TOKEN or GITHUB_REPO_NAME is missing in .env."
+            return f"Saved locally to {local_file_path} (GitHub sync skipped: missing credentials)."
 
         gh = Github(github_token)
         repo = gh.get_repo(github_repo_name)
-        repo_file_path = f"ideas/{folder_name}/index.html"
-        commit_message = f"Add landing page MVP for idea: {folder_name}"
+        repo_file_path = f"ideas/{clean_slug}/index.html"
+        commit_message = f"Add high-converting MVP landing page for: {clean_slug}"
 
         try:
-            # Check if file exists on GitHub to update, or create new
             contents = repo.get_contents(repo_file_path)
             repo.update_file(contents.path, commit_message, html_content, contents.sha)
-            status_msg = "Updated existing file on GitHub."
+            status_msg = "Updated existing page on GitHub."
         except Exception:
             repo.create_file(repo_file_path, commit_message, html_content)
-            status_msg = "Created new file on GitHub."
+            status_msg = "Created new page on GitHub."
 
-        return f"Successfully saved locally at `{local_file_path}` and synced to GitHub (`{repo_file_path}`): {status_msg}"
+        return f"Successfully saved locally (`{local_file_path}`) and synced to GitHub (`{repo_file_path}`): {status_msg}"
     except Exception as e:
-        return f"Saved locally to {folder_name}/index.html, but GitHub sync failed: {str(e)}"
+        return f"Saved locally to ideas/{folder_name}/index.html, but GitHub sync failed: {str(e)}"
 
 # ---------------------------------------------------------------------------
-# 2. AGENT DEFINITIONS
+# 2. AGENTS WITH QUALITY ASSURANCE GATEWAY
 # ---------------------------------------------------------------------------
 
 idea_hunter = Agent(
-    role="Trend & Problem Hunter",
-    goal="Scrape Reddit, Hacker News, and Product Hunt to discover user pain points and pick 10 distinct MVP business ideas.",
+    role="Principal Market Researcher",
+    goal="Scrape community sources and filter out noise to generate 10 deeply validated, high-demand SaaS ideas.",
     backstory=(
-        "You are an expert market analyst who identifies high-potential software gaps online. "
-        "You extract 10 separate actionable product ideas that can be validated with landing pages."
+        "You are a seasoned startup finder. You ignore fluff posts and hunt for explicit user pain points "
+        "(e.g., manual workarounds, tools people complain about, missing features). "
+        "You demand concrete evidence before selecting a software concept."
     ),
-    tools=[scrape_reddit, scrape_hacker_news, scrape_product_hunt],
+    tools=[scrape_reddit_quality, scrape_hacker_news_quality, scrape_product_hunt_quality],
     llm=grok_llm,
     verbose=True
 )
 
 developer_agent = Agent(
-    role="Lead Web Developer",
-    goal="Generate production-ready HTML index files for all 10 business ideas and save them to the repository.",
+    role="Lead Frontend Engineer",
+    goal="Build high-converting, professional landing pages using Tailwind CSS for all 10 ideas.",
     backstory=(
-        "You write clean HTML5, Tailwind CSS, and embedded JavaScript waitlist forms. "
-        "You save each generated page into its designated GitHub/local path using your tool."
+        "You build slick, modern SaaS landing pages using HTML5, Tailwind CSS, and simple JS interactive forms. "
+        "Every page you generate includes custom copy, hero visuals, problem breakdown, features, pricing, and FAQ. "
+        "You NEVER use placeholders or incomplete HTML boilerplate."
     ),
     tools=[save_and_push_idea],
     llm=grok_llm,
     verbose=True
 )
 
+qa_auditor = Agent(
+    role="Design & QA Director",
+    goal="Audit generated landing page files to ensure they meet visual, copy, and completeness criteria.",
+    backstory=(
+        "You are a strict product reviewer. You verify that landing pages have full text, modern Tailwind styling, "
+        "no broken markup, functional call-to-actions, and distinct value propositions."
+    ),
+    llm=grok_llm,
+    verbose=True
+)
+
 # ---------------------------------------------------------------------------
-# 3. TASK DEFINITIONS
+# 3. TASKS WITH QUALITY ENFORCEMENT
 # ---------------------------------------------------------------------------
 
-task_find_10_ideas = Task(
+task_find_10_quality_ideas = Task(
     description=(
-        "Run all scraper tools across Reddit, Hacker News, and Product Hunt. "
-        "Analyze real community complaints, feature requests, and gaps. "
-        "Select exactly 10 distinct MVP business concepts. "
-        "For each idea, output: \n"
-        "1. Unique folder slug (e.g., `ai-podcast-summarizer`)\n"
-        "2. Product Name & Value Proposition\n"
-        "3. Core Target Audience & Key Features\n"
+        "1. Execute all 3 scrapers (`High-Quality Reddit Scraper`, `High-Quality Hacker News Scraper`, and `Product Hunt Gap Scraper`).\n"
+        "2. Analyze the extracted data and pick EXACTLY 10 distinct, highly specific SaaS/software business concepts.\n"
+        "3. Reject generic ideas like 'AI Todo App' or 'Simple Blog Builder'. Pick specific high-value solutions.\n"
+        "4. For each idea, produce:\n"
+        "   - `slug`: clean folder name (e.g. `b2b-invoice-reconciler`)\n"
+        "   - `title`: Catchy product name\n"
+        "   - `target_audience`: Specific buyer persona\n"
+        "   - `pain_point`: Real problem scraped from the forums\n"
+        "   - `core_features`: 3 key capabilities\n"
     ),
-    expected_output="A list of 10 fully scoped business concepts with folder slugs.",
+    expected_output="A structured list of 10 fully validated product briefs derived directly from forum data.",
     agent=idea_hunter
 )
 
-task_build_10_pages = Task(
+task_build_10_quality_pages = Task(
     description=(
-        "For EACH of the 10 business ideas identified by the Idea Hunter: \n"
-        "1. Design a complete, beautiful HTML landing page using CDN Tailwind CSS (`<script src='https://cdn.tailwindcss.com'></script>`).\n"
-        "2. Include a hero section, feature grid, pricing tier preview, and an interactive waitlist email capture form.\n"
-        "3. Call the `Save Landing Page and Sync to GitHub` tool for EACH idea, passing its slug (folder_name) and full `index.html` string.\n"
-        "Ensure all 10 ideas are saved in `ideas/<folder_slug>/index.html`."
+        "For EACH of the 10 ideas passed by the Market Researcher:\n"
+        "1. Create a complete, standalone `index.html` file using Tailwind CSS CDN (`<script src='https://cdn.tailwindcss.com'></script>`).\n"
+        "2. Mandatory Page Structure:\n"
+        "   - **Hero Section**: Headline, subheadline, CTA button, and interactive email waitlist form.\n"
+        "   - **Problem vs Solution Grid**: Explicitly contrasting current manual pain with your solution.\n"
+        "   - **Features Section**: 3-4 distinct benefit cards with Lucide/Heroicon style SVG icons.\n"
+        "   - **Pricing Section**: 2-3 pricing tiers with clear feature bullet points.\n"
+        "   - **FAQ Section**: 3 accordion-style common questions answered.\n"
+        "   - **Footer**: Branding and copyright.\n"
+        "3. DO NOT use generic filler text or lorem ipsum. Tailor all copy directly to the specific business idea.\n"
+        "4. Call `Save Landing Page and Sync to GitHub` for EACH idea, passing its slug and HTML string.\n"
     ),
-    expected_output="Confirmation that all 10 index.html files have been written locally and pushed to GitHub.",
+    expected_output="Confirmation that all 10 index.html pages were rendered with full copy and saved to GitHub.",
     agent=developer_agent
+)
+
+task_audit_and_verify = Task(
+    description=(
+        "Review the generated output from the Lead Frontend Engineer.\n"
+        "1. Confirm that 10 distinct landing pages were generated and saved using the GitHub tool.\n"
+        "2. Verify that none of the saved pages contain placeholder text, broken HTML, or unstyled elements.\n"
+        "3. Produce a Quality Report summarizing the status of all 10 generated landing pages."
+    ),
+    expected_output="A QA Approval Report verifying the high-quality generation of all 10 landing pages.",
+    agent=qa_auditor
 )
 
 # ---------------------------------------------------------------------------
@@ -198,13 +244,13 @@ task_build_10_pages = Task(
 # ---------------------------------------------------------------------------
 
 swarm = Crew(
-    agents=[idea_hunter, developer_agent],
-    tasks=[task_find_10_ideas, task_build_10_pages],
+    agents=[idea_hunter, developer_agent, qa_auditor],
+    tasks=[task_find_10_quality_ideas, task_build_10_quality_pages, task_audit_and_verify],
     process=Process.sequential,
     verbose=True
 )
 
 if __name__ == "__main__":
     result = swarm.kickoff()
-    print("\n\n================ SWARM OUTPUT ================\n")
+    print("\n\n================ QUALITY CONTROL SWARM OUTPUT ================\n")
     print(result)
