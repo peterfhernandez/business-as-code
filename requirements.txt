@@ -1,0 +1,5 @@
+crewai>=1.15.0
+crewai-tools>=0.30.0
+pygithub>=2.1.1
+python-dotenv>=1.0.1
+openai>=1.20.0
