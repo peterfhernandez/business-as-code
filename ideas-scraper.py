@@ -247,6 +247,8 @@ def inspect_ideas_directory() -> str:
         return f"No `ideas/` directory found at {IDEAS_DIR}."
     lines = []
     for folder in sorted(os.listdir(IDEAS_DIR)):
+        if not os.path.isdir(os.path.join(IDEAS_DIR, folder)):
+            continue  # e.g. ideas_validation_report.md written by validate-ideas.py
         page = os.path.join(IDEAS_DIR, folder, "index.html")
         if not os.path.isfile(page):
             lines.append(f"- {folder}: MISSING index.html")

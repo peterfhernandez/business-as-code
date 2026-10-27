@@ -14,10 +14,12 @@ sys.modules["mcp.types"] = mcp_types_mock
 
 import os
 import json
+import re
 import urllib.request
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from github import Github, GithubException
 
 load_dotenv()
 
@@ -31,6 +33,11 @@ grok_llm = LLM(
     api_key=os.getenv("XAI_API_KEY")
 )
 
+# Resolve paths against this file so the script works from any working directory.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IDEAS_DIR = os.path.join(BASE_DIR, "ideas")
+REPORT_FILENAME = "ideas_validation_report.md"
+
 # ---------------------------------------------------------------------------
 # 1. DEFINE TOOLS FOR READING & REPORTING
 # ---------------------------------------------------------------------------
@@ -38,13 +45,12 @@ grok_llm = LLM(
 @tool("Fetch Local Ideas Folder")
 def list_local_ideas() -> str:
     """Reads all generated ideas and landing page summaries from the local `ideas/` directory."""
-    ideas_dir = "ideas"
-    if not os.path.exists(ideas_dir):
+    if not os.path.exists(IDEAS_DIR):
         return "No local `ideas/` directory found. Please run ideas-scraper.py first."
 
     ideas_summary = []
-    for folder in os.listdir(ideas_dir):
-        folder_path = os.path.join(ideas_dir, folder)
+    for folder in sorted(os.listdir(IDEAS_DIR)):
+        folder_path = os.path.join(IDEAS_DIR, folder)
         if os.path.isdir(folder_path):
             index_path = os.path.join(folder_path, "index.html")
             if os.path.exists(index_path):
@@ -55,37 +61,43 @@ def list_local_ideas() -> str:
     return "\n---\n".join(ideas_summary) if ideas_summary else "No ideas found in directory."
 
 
-@tool("Save Validation Matrix Report")
-def save_validation_report(report_md: str) -> str:
-    """Saves the final validation report locally to `ideas_validation_report.md` and pushes it to GitHub."""
-    report_filename = "ideas_validation_report.md"
-    
-    # 1. Local Save
-    with open(report_filename, "w", encoding="utf-8") as f:
-        f.write(report_md)
+def extract_markdown(raw: str) -> str:
+    """Drops a markdown code fence the LLM may have wrapped the whole report in."""
+    text = raw.strip()
+    fenced = re.fullmatch(r'```(?:markdown|md)?\s*(.*?)```', text, re.DOTALL | re.IGNORECASE)
+    return fenced.group(1).strip() if fenced else text
 
-    # 2. GitHub Push
+
+def save_validation_report(report_md: str) -> str:
+    """Writes ideas/ideas_validation_report.md locally, then commits it to GitHub when credentials are present."""
+    report_path = os.path.join(IDEAS_DIR, REPORT_FILENAME)
+    try:
+        os.makedirs(IDEAS_DIR, exist_ok=True)
+        with open(report_path, "w", encoding="utf-8") as f:
+            f.write(report_md)
+    except OSError as e:
+        return f"FAILED: could not write {report_path}: {e}"
+
     github_token = os.getenv("GITHUB_TOKEN")
     github_repo_name = os.getenv("GITHUB_REPO")
-
     if not github_token or not github_repo_name:
-        return f"Report saved locally to `{report_filename}` (GitHub sync skipped: missing credentials)."
+        return f"Report saved locally to {report_path} (GitHub sync skipped: GITHUB_TOKEN or GITHUB_REPO not set)."
 
+    repo_file_path = f"ideas/{REPORT_FILENAME}"
     try:
-        gh = Github(github_token)
-        repo = gh.get_repo(github_repo_name)
-        
+        repo = Github(github_token).get_repo(github_repo_name)
         try:
-            contents = repo.get_contents(report_filename)
+            contents = repo.get_contents(repo_file_path)
             repo.update_file(contents.path, "Update Market Validation Report", report_md, contents.sha)
-            status = "Updated existing report on GitHub."
-        except Exception:
-            repo.create_file(report_filename, "Add Market Validation Report", report_md)
-            status = "Created new report on GitHub."
-
-        return f"Report saved locally and pushed to GitHub (`{report_filename}`): {status}"
+            status_msg = "updated existing file"
+        except GithubException as e:
+            if e.status != 404:
+                raise
+            repo.create_file(repo_file_path, "Add Market Validation Report", report_md)
+            status_msg = "created new file"
+        return f"Report saved locally to {report_path} and synced to GitHub {github_repo_name}/{repo_file_path} ({status_msg})."
     except Exception as e:
-        return f"Saved locally to `{report_filename}`, but GitHub push failed: {str(e)}"
+        return f"Report saved locally to {report_path}, but GitHub sync failed: {e}"
 
 # ---------------------------------------------------------------------------
 # 2. DEFINE AGENTS
@@ -138,9 +150,10 @@ task_tech_and_ranking = Task(
         "   - **Est. MVP Development Time** (e.g., 8 hours, 3 days, 2 weeks)\n"
         "   - **Est. Monthly Running Costs** (Breakdown: Cloud hosting, database, LLM API calls per 1k users)\n"
         "3. Rank all the scraped ideas from #1 (Highest ROI / Easiest Win) to lowest.\n"
-        "4. Call `save_validation_report` to write `ideas_validation_report.md` locally and push to GitHub."
+        "4. Return the complete ranked report as markdown. Your final answer is saved to disk as-is, "
+        "so do not include any commentary outside the report."
     ),
-    expected_output="A ranked markdown report containing full market, tech, difficulty, and cost metrics saved to GitHub.",
+    expected_output="A complete ranked markdown report containing full market, tech, difficulty, and cost metrics for every idea.",
     agent=tech_estimator
 )
 
@@ -157,5 +170,8 @@ swarm = Crew(
 
 if __name__ == "__main__":
     result = swarm.kickoff()
+    # Saved from Python rather than via an agent tool call, so the report is always written.
+    save_status = save_validation_report(extract_markdown(result.raw))
     print("\n\n================ VALIDATION REPORT ================\n")
-    print(result)
+    print(result.raw)
+    print(f"\n{save_status}")
