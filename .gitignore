@@ -1,3 +1,6 @@
 .env
 __pycache__/
 *.pyc
+.venv/
+infra/supabase/.temp/
+infra/supabase/.branches/
