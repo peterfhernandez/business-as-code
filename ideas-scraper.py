@@ -113,14 +113,33 @@ def scrape_product_hunt_quality() -> str:
     except Exception as e:
         return f"Error scraping Product Hunt: {str(e)}"
 
+# ---------------------------------------------------------------------------
+# 2. SAVE TOOL WITH MANDATORY QUALITY CHECKS
+# ---------------------------------------------------------------------------
 
-@tool("Save Landing Page and Sync to GitHub")
-def save_and_push_idea(folder_name: str, html_content: str) -> str:
-    """Saves an index.html landing page inside `ideas/<folder_name>/index.html` locally and on GitHub."""
+@tool("Save and Validate Landing Page")
+def save_and_validate_page(folder_name: str, html_content: str) -> str:
+    """
+    Saves an index.html file locally and to GitHub ONLY if it passes content validation checks:
+    - Rejects pages under 1,500 bytes.
+    - Rejects pages containing HTML comment placeholders like <!-- ... -->.
+    - Rejects pages with empty body tags.
+    """
+    clean_slug = re.sub(r'[^a-z0-9\-]', '', folder_name.lower().replace(' ', '-'))
+    
+    # QA CHECK 1: File Size Check
+    if len(html_content.encode('utf-8')) < 1500:
+        return f"REJECTED BY QA: Generated HTML for '{clean_slug}' is too short ({len(html_content)} chars). You must provide FULL HTML code with all sections."
+
+    # QA CHECK 2: Comment Placeholder Check
+    if re.search(r'<!--.*(?:tailored|section|rest of|todo|idea).*-->', html_content, re.IGNORECASE):
+        return f"REJECTED BY QA: Generated HTML for '{clean_slug}' contains comment placeholders! Write actual HTML content instead of comments."
+
+    # QA CHECK 3: Empty Body Check
+    if "<body></body>" in html_content.replace(" ", ""):
+        return f"REJECTED BY QA: Generated HTML for '{clean_slug}' has an empty body tag!"
+
     try:
-        # Sanitize folder name slug
-        clean_slug = re.sub(r'[^a-z0-9\-]', '', folder_name.lower().replace(' ', '-'))
-        
         # 1. Local Save
         local_dir = os.path.join("ideas", clean_slug)
         os.makedirs(local_dir, exist_ok=True)
@@ -131,15 +150,15 @@ def save_and_push_idea(folder_name: str, html_content: str) -> str:
 
         # 2. GitHub Push
         github_token = os.getenv("GITHUB_TOKEN")
-        github_repo_name = os.getenv("GITHUB_REPO_NAME")
+        github_repo_name = os.getenv("GITHUB_REPO")
         
         if not github_token or not github_repo_name:
-            return f"Saved locally to {local_file_path} (GitHub sync skipped: missing credentials)."
+            return f"PASSED QA & Saved locally to `{local_file_path}` (GitHub sync skipped: missing credentials)."
 
         gh = Github(github_token)
         repo = gh.get_repo(github_repo_name)
         repo_file_path = f"ideas/{clean_slug}/index.html"
-        commit_message = f"Add high-converting MVP landing page for: {clean_slug}"
+        commit_message = f"Add full high-converting landing page for: {clean_slug}"
 
         try:
             contents = repo.get_contents(repo_file_path)
@@ -149,49 +168,18 @@ def save_and_push_idea(folder_name: str, html_content: str) -> str:
             repo.create_file(repo_file_path, commit_message, html_content)
             status_msg = "Created new page on GitHub."
 
-        return f"Successfully saved locally (`{local_file_path}`) and synced to GitHub (`{repo_file_path}`): {status_msg}"
+        return f"PASSED QA! Saved locally (`{local_file_path}`) and synced to GitHub (`{repo_file_path}`): {status_msg}"
     except Exception as e:
         return f"Saved locally to ideas/{folder_name}/index.html, but GitHub sync failed: {str(e)}"
 
-@tool("Batch Save 10 Landing Pages")
-def batch_save_ideas(ideas_json_str: str) -> str:
-    """
-    Accepts a JSON string array of 10 landing page objects and writes all 10 files locally and to GitHub.
-    Expected JSON schema for ideas_json_str:
-    [
-        {"folder_name": "slug-1", "html_content": "<!DOCTYPE html>..."},
-        {"folder_name": "slug-2", "html_content": "<!DOCTYPE html>..."}
-    ]
-    """
-    try:
-        ideas = json.loads(ideas_json_str)
-        if not isinstance(ideas, list):
-            return "Error: Input must be a JSON array of objects."
-        
-        results = []
-        for item in ideas:
-            folder_name = item.get("folder_name")
-            html_content = item.get("html_content")
-            if folder_name and html_content:
-                res = save_and_push_idea.func(folder_name, html_content)
-                results.append(f"[{folder_name}]: {res}")
-        
-        return "\n".join(results)
-    except Exception as e:
-        return f"Error parsing JSON or saving batch: {str(e)}"
-
 # ---------------------------------------------------------------------------
-# 2. AGENTS WITH QUALITY ASSURANCE GATEWAY
+# 3. AGENTS WITH QA ENFORCEMENT
 # ---------------------------------------------------------------------------
 
 idea_hunter = Agent(
     role="Principal Market Researcher",
     goal="Scrape community sources and filter out noise to generate 10 deeply validated, high-demand SaaS ideas.",
-    backstory=(
-        "You are a seasoned startup finder. You ignore fluff posts and hunt for explicit user pain points "
-        "(e.g., manual workarounds, tools people complain about, missing features). "
-        "You demand concrete evidence before selecting a software concept."
-    ),
+    backstory="You are a seasoned startup founder who finds explicit user pain points and feature requests online.",
     tools=[scrape_reddit_quality, scrape_hacker_news_quality, scrape_product_hunt_quality],
     llm=grok_llm,
     verbose=True
@@ -199,84 +187,66 @@ idea_hunter = Agent(
 
 developer_agent = Agent(
     role="Lead Frontend Engineer",
-    goal="Build high-converting, professional landing pages using Tailwind CSS for all 10 ideas.",
+    goal="Write complete, non-truncated HTML index files for each idea and save them using `Save and Validate Landing Page`.",
     backstory=(
-        "You build slick, modern SaaS landing pages using HTML5, Tailwind CSS, and simple JS interactive forms. "
-        "Every page you generate includes custom copy, hero visuals, problem breakdown, features, pricing, and FAQ. "
-        "You NEVER use placeholders or incomplete HTML boilerplate."
+        "You are a full-stack engineer who builds complete landing pages using Tailwind CSS CDN. "
+        "You write full HTML code for every section and NEVER use HTML comment placeholders."
     ),
-    tools=[save_and_push_idea, batch_save_ideas],
+    tools=[save_and_validate_page],
     llm=grok_llm,
     verbose=True
 )
 
 qa_auditor = Agent(
-    role="Design & QA Director",
-    goal="Audit generated landing page files to ensure they meet visual, copy, and completeness criteria.",
-    backstory=(
-        "You are a strict product reviewer. You verify that landing pages have full text, modern Tailwind styling, "
-        "no broken markup, functional call-to-actions, and distinct value propositions."
-    ),
+    role="Quality Assurance Inspector",
+    goal="Verify that all 10 files in the `ideas/` directory contain full HTML markup and zero placeholder comments.",
+    backstory="You verify that files rendered in `ideas/` have real HTML content and valid page structures.",
     llm=grok_llm,
     verbose=True
 )
 
 # ---------------------------------------------------------------------------
-# 3. TASKS WITH QUALITY ENFORCEMENT
+# 4. TASKS
 # ---------------------------------------------------------------------------
 
 task_find_10_quality_ideas = Task(
     description=(
-        "1. Execute all 3 scrapers (`High-Quality Reddit Scraper`, `High-Quality Hacker News Scraper`, and `Product Hunt Gap Scraper`).\n"
-        "2. Analyze the extracted data and pick EXACTLY 10 distinct, highly specific SaaS/software business concepts.\n"
-        "3. Reject generic ideas like 'AI Todo App' or 'Simple Blog Builder'. Pick specific high-value solutions.\n"
-        "4. For each idea, produce:\n"
-        "   - `slug`: clean folder name (e.g. `b2b-invoice-reconciler`)\n"
-        "   - `title`: Catchy product name\n"
-        "   - `target_audience`: Specific buyer persona\n"
-        "   - `pain_point`: Real problem scraped from the forums\n"
-        "   - `core_features`: 3 key capabilities\n"
+        "1. Execute all 3 scraper tools.\n"
+        "2. Extract EXACTLY 10 distinct, specific SaaS/software concepts with real community demand.\n"
+        "3. Provide a list of 10 items, each containing: `slug`, `product_name`, `target_audience`, `pain_point`, and `key_features`."
     ),
-    expected_output="A structured list of 10 fully validated product briefs derived directly from forum data.",
+    expected_output="A list of 10 validated product briefs with folder slugs.",
     agent=idea_hunter
 )
 
 task_build_10_quality_pages = Task(
     description=(
-        "For EACH of the 10 ideas passed by the Market Researcher:\n"
-        "1. Create a complete, standalone `index.html` file using Tailwind CSS CDN (`<script src='https://cdn.tailwindcss.com'></script>`).\n"
-        "2. Mandatory Page Structure:\n"
-        "   - **Hero Section**: Headline, subheadline, CTA button, and interactive email waitlist form.\n"
-        "   - **Problem vs Solution Grid**: Explicitly contrasting current manual pain with your solution.\n"
-        "   - **Features Section**: 3-4 distinct benefit cards with Lucide/Heroicon style SVG icons.\n"
-        "   - **Pricing Section**: 2-3 pricing tiers with clear feature bullet points.\n"
-        "   - **FAQ Section**: 3 accordion-style common questions answered.\n"
-        "   - **Footer**: Branding and copyright.\n"
-        "3. DO NOT use generic filler text or lorem ipsum. Tailor all copy directly to the specific business idea.\n"
-        "4. Call `Batch Save 10 Landing Pages` to save all 10 ideas, passing their slugs and HTML strings.\n"
+        "FOR EACH OF THE 10 BUSINESS IDEAS:\n"
+        "1. Construct a COMPLETE standalone `index.html` file with full Tailwind CSS markup.\n"
+        "2. Required sections: Hero with Waitlist Input, Problem vs. Solution Grid, 3 Feature Cards, Pricing Tiers, FAQ.\n"
+        "3. Call `Save and Validate Landing Page` with the folder slug and HTML code.\n"
+        "4. IF THE TOOL RETURNS 'REJECTED BY QA', FIX THE HTML AND CALL THE TOOL AGAIN until all 10 ideas are saved successfully."
     ),
-    expected_output="Confirmation that all 10 index.html pages were rendered with full copy and saved to GitHub.",
+    expected_output="All 10 landing pages successfully passed QA validation and saved.",
     agent=developer_agent
 )
 
-task_audit_and_verify = Task(
+task_verify_ideas_dir = Task(
     description=(
-        "Review the generated output from the Lead Frontend Engineer.\n"
-        "1. Confirm that 10 distinct landing pages were generated and saved using the GitHub tool.\n"
-        "2. Verify that none of the saved pages contain placeholder text, broken HTML, or unstyled elements.\n"
-        "3. Produce a Quality Report summarizing the status of all 10 generated landing pages."
+        "Inspect the `ideas/` folder on disk to confirm that 10 subdirectories exist and each `index.html` "
+        "has a file size greater than 1,500 bytes with valid HTML markup inside."
     ),
-    expected_output="A QA Approval Report verifying the high-quality generation of all 10 landing pages.",
+    expected_output="A QA status log confirming all 10 pages are non-empty and deployed.",
     agent=qa_auditor
 )
 
 # ---------------------------------------------------------------------------
-# 4. EXECUTE THE SWARM
+# 5. EXECUTE THE SWARM
 # ---------------------------------------------------------------------------
 
 swarm = Crew(
     agents=[idea_hunter, developer_agent, qa_auditor],
-    tasks=[task_find_10_quality_ideas, task_build_10_quality_pages, task_audit_and_verify],
+    tasks=[task_find_10_quality_ideas, task_build_10_quality_pages, task_verify_ideas_dir],
     process=Process.sequential,
     verbose=True
 )
