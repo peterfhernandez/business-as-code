@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeedbackTagger - Auto-Tag &amp; Prioritize Customer Feedback</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #0F172A;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .section-header {
+            font-size: 2.75rem;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -.025em;
+        }
+
+        .nav-active {
+            color: #0F172A;
+            font-weight: 600;
+        }
+
+        .feature-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(15 23 42 / 0.05), 0 8px 10px -6px rgb(15 23 42 / 0.05);
+        }
+
+        .pricing-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-slate-200">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-10 h-10 bg-slate-900 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-tags text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-display text-3xl font-semibold tracking-tighter">FeedbackTagger</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-x-9 text-sm font-medium">
+                    <a href="#problem" class="text-slate-600 hover:text-slate-900 transition-colors">Problem</a>
+                    <a href="#features" class="text-slate-600 hover:text-slate-900 transition-colors">Features</a>
+                    <a href="#pricing" class="text-slate-600 hover:text-slate-900 transition-colors">Pricing</a>
+                    <a href="#faq" class="text-slate-600 hover:text-slate-900 transition-colors">FAQ</a>
+                </div>
+                
+                <div class="flex items-center gap-x-4">
+                    <a href="#waitlist" class="hidden md:block px-5 py-2.5 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors">Log in</a>
+                    <a href="#waitlist" class="px-5 py-2.5 text-sm font-semibold bg-slate-900 text-white rounded-3xl hover:bg-slate-800 transition-colors">Join waitlist</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="max-w-screen-xl mx-auto px-6 pt-16 pb-20">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center gap-x-2 bg-white border border-slate-200 rounded-full px-4 py-1.5 mb-6">
+                <div class="flex items-center">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <span class="ml-2 text-xs font-semibold tracking-wider text-emerald-600">NOW IN PRIVATE BETA</span>
+                </div>
+            </div>
+            
+            <h1 class="section-header tracking-tighter text-slate-900">Stop drowning in support tickets.<br>Let FeedbackTagger tag them for you.</h1>
+            
+            <p class="mt-6 text-xl text-slate-600 max-w-lg mx-auto">The AI-powered feedback platform that automatically ingests, categorizes, and prioritizes customer insights from email and Intercom — built for B2B SaaS product teams.</p>
+            
+            <!-- Waitlist Form -->
+            <div id="waitlist" class="mt-10 max-w-md mx-auto">
+                <form class="flex flex-col sm:flex-row gap-3" onsubmit="event.preventDefault(); alert('Thanks! You\'ve been added to the FeedbackTagger waitlist.');">
+                    <div class="flex-1">
+                        <input type="email" placeholder="Work email" required 
+                               class="w-full px-5 py-4 text-base border border-slate-300 focus:border-slate-400 outline-none rounded-3xl placeholder:text-slate-400">
+                    </div>
+                    <button type="submit" 
+                            class="px-8 py-4 bg-slate-900 hover:bg-slate-800 transition-colors text-white font-semibold rounded-3xl text-base whitespace-nowrap">
+                        Join waitlist
+                    </button>
+                </form>
+                <p class="mt-3 text-xs text-slate-500">Join 340+ product managers from B2B SaaS companies</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem vs Solution -->
+    <section id="problem" class="max-w-screen-xl mx-auto px-6 py-16 border-t border-slate-200 bg-white">
+        <div class="max-w-2xl mx-auto text-center mb-12">
+            <span class="text-sm font-semibold text-slate-500 tracking-[1.5px]">FROM REDDIT R/PRODUCTMANAGEMENT</span>
+            <h2 class="mt-3 text-4xl font-semibold tracking-tight">The manual tagging problem is killing your roadmap velocity</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            <!-- Problem -->
+            <div class="bg-red-50 border border-red-100 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-6">
+                    <div class="w-9 h-9 bg-red-100 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-clock text-red-600"></i>
+                    </div>
+                    <span class="font-semibold text-red-700">The Old Way</span>
+                </div>
+                <ul class="space-y-4 text-red-800">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times mt-1 text-red-500"></i> <span>Manually reading and tagging 200+ tickets per week</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times mt-1 text-red-500"></i> <span>Hours lost to inconsistent categorization across the team</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times mt-1 text-red-500"></i> <span>Important themes buried in spreadsheets that no one updates</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times mt-1 text-red-500"></i> <span>Customer sentiment and roadmap priorities completely disconnected</span></li>
+                </ul>
+            </div>
+            
+            <!-- Solution -->
+            <div class="bg-emerald-50 border border-emerald-100 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-6">
+                    <div class="w-9 h-9 bg-emerald-100 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-magic text-emerald-600"></i>
+                    </div>
+                    <span class="font-semibold text-emerald-700">With FeedbackTagger</span>
+                </div>
+                <ul class="space-y-4 text-emerald-800">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check mt-1 text-emerald-600"></i> <span>Auto-ingest tickets from email and Intercom in real time</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check mt-1 text-emerald-600"></i> <span>AI tags themes, scores sentiment, and surfaces top priorities</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check mt-1 text-emerald-600"></i> <span>Weekly insight reports delivered straight to your inbox</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check mt-1 text-emerald-600"></i> <span>Direct voting integration into your product roadmap</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="max-w-screen-xl mx-auto px-6 py-20">
+        <div class="text-center mb-12">
+            <span class="text-sm font-semibold tracking-wider text-slate-500">CORE CAPABILITIES</span>
+            <h2 class="mt-3 text-4xl font-semibold tracking-tight">Built specifically for product managers</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-white border border-slate-200 p-8 rounded-3xl">
+                <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-inbox text-slate-700 text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">Email &amp; Intercom Ingestion</h3>
+                <p class="text-slate-600">Automatically pulls in customer conversations from support@ inboxes and Intercom conversations. No more manual exports or CSV uploads.</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="feature-card bg-white border border-slate-200 p-8 rounded-3xl">
+                <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-tags text-slate-700 text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">Auto-Categorization + Sentiment</h3>
+                <p class="text-slate-600">AI identifies recurring themes across feedback and assigns sentiment scores. Spot rising issues and delighted customers instantly.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="feature-card bg-white border border-slate-200 p-8 rounded-3xl">
+                <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-road text-slate-700 text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">Roadmap Voting &amp; Reports</h3>
+                <p class="text-slate-600">Let customers vote on proposed features. Receive beautifully formatted weekly insight reports with prioritized recommendations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="max-w-screen-xl mx-auto px-6 py-16 bg-white border-t border-slate-200">
+        <div class="max-w-2xl mx-auto text-center mb-12">
+            <h2 class="text-4xl font-semibold tracking-tight">Simple pricing for product teams</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <!-- Starter -->
+            <div class="pricing-card border border-slate-200 rounded-3xl p-8">
+                <div class="mb-8">
+                    <span class="font-semibold">Starter</span>
+                    <div class="mt-4 flex items-baseline"><span class="text-5xl font-semibold">$0</span><span class="text-slate-500 ml-1">/mo</span></div>
+                </div>
+                <ul class="space-y-3 text-sm mb-8">
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Up to 100 tickets/month</span></li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Email ingestion only</span></li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Basic auto-categorization</span></li>
+                </ul>
+                <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" class="w-full py-3 text-sm font-semibold border border-slate-300 hover:bg-slate-50 rounded-3xl transition-colors">Join waitlist</button>
+            </div>
+            
+            <!-- Pro -->
+            <div class="pricing-card border-2 border-slate-900 rounded-3xl p-8 relative">
+                <div class="absolute -top-3 right-6 bg-slate-900 text-white text-xs font-semibold px-4 py-1 rounded-full">MOST POPULAR</div>
+                <div class="mb-8">
+                    <span class="font-semibold">Pro</span>
+                    <div class="mt-4 flex items-baseline"><span class="text-5xl font-semibold">$49</span><span class="text-slate-500 ml-1">/mo</span></div>
+                </div>
+                <ul class="space-y-3 text-sm mb-8">
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Unlimited tickets</span></li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Email + Intercom</span></li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Sentiment scoring</span></li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Weekly insight reports</span></li>
+                </ul>
+                <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" class="w-full py-3 text-sm font-semibold bg-slate-900 text-white hover:bg-slate-800 rounded-3xl transition-colors">Join waitlist</button>
+            </div>
+            
+            <!-- Team -->
+            <div class="pricing-card border border-slate-200 rounded-3xl p-8">
+                <div class="mb-8">
+                    <span class="font-semibold">Team</span>
+                    <div class="mt-4 flex items-baseline"><span class="text-5xl font-semibold">$99</span><span class="text-slate-500 ml-1">/mo</span></div>
+                </div>
+                <ul class="space-y-3 text-sm mb-8">
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Everything in Pro</span></li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Roadmap voting integration</span></li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Team workspaces</span></li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Priority support</span></li>
+                </ul>
+                <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" class="w-full py-3 text-sm font-semibold border border-slate-300 hover:bg-slate-50 rounded-3xl transition-colors">Join waitlist</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="max-w-screen-xl mx-auto px-6 py-20">
+        <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-semibold tracking-tight">Frequently asked questions</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-white border border-slate-200 rounded-3xl p-7">
+                    <div class="font-semibold mb-2">How accurate is the auto-categorization?</div>
+                    <p class="text-slate-600 text-sm">FeedbackTagger reaches 92% accuracy on common B2B SaaS themes after training on your historical data. You can always correct tags to improve the model.</p>
+                </div>
+                
+                <div class="bg-white border border-slate-200 rounded-3xl p-7">
+                    <div class="font-semibold mb-2">Does it work with our existing helpdesk?</div>
+                    <p class="text-slate-600 text-sm">Yes. We currently support direct Intercom integration and any email-based support workflow. Additional integrations are added based on waitlist feedback.</p>
+                </div>
+                
+                <div class="bg-white border border-slate-200 rounded-3xl p-7">
+                    <div class="font-semibold mb-2">How long until I see my first insights?</div>
+                    <p class="text-slate-600 text-sm">Most teams receive their first categorized dashboard and weekly report within 48 hours of connecting their inbox or Intercom workspace.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white">
+        <div class="max-w-screen-xl mx-auto px-6 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-y-4 text-sm text-slate-500">
+                <div class="flex items-center gap-x-2">
+                    <span>© 2025 FeedbackTagger</span>
+                </div>
+                <div class="flex gap-x-6">
+                    <a href="#" class="hover:text-slate-700">Privacy</a>
+                    <a href="#" class="hover:text-slate-700">Terms</a>
+                    <a href="#" class="hover:text-slate-700">Twitter</a>
+                </div>
+                <div>Made for product managers, by product managers</div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

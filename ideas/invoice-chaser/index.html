@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayChase - Get Paid Without the Awkward Chasing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #0F172A;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .hero-bg {
+            background: linear-gradient(135deg, #0F172A 0%, #1E2937 100%);
+        }
+
+        .section-header {
+            font-size: 2.5rem;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -.025em;
+        }
+
+        .feature-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+        }
+
+        .nav-active {
+            color: #0F172A;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-slate-200">
+        <div class="max-w-screen-xl mx-auto">
+            <div class="px-8 py-5 flex items-center justify-between">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-2xl tracking-tighter">PC</span>
+                    </div>
+                    <div>
+                        <span class="font-display text-2xl font-semibold tracking-tighter">PayChase</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-x-8 text-sm">
+                    <a href="#features" class="font-medium text-slate-600 hover:text-slate-900">Features</a>
+                    <a href="#pricing" class="font-medium text-slate-600 hover:text-slate-900">Pricing</a>
+                    <a href="#faq" class="font-medium text-slate-600 hover:text-slate-900">FAQ</a>
+                </div>
+                <div>
+                    <a href="#waitlist" 
+                       class="px-5 py-2.5 text-sm font-semibold rounded-2xl bg-white border border-slate-300 hover:bg-slate-50 transition-colors">
+                        Join waitlist
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-bg text-white">
+        <div class="max-w-screen-xl mx-auto px-8 pt-16 pb-20">
+            <div class="max-w-2xl">
+                <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-white/10 backdrop-blur-sm mb-6">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span class="text-sm font-medium">Now accepting early users</span>
+                </div>
+                
+                <h1 class="text-6xl font-display tracking-tighter leading-none mb-6">
+                    Stop chasing.<br>
+                    Start getting paid.
+                </h1>
+                
+                <p class="text-xl text-slate-300 max-w-md mb-10">
+                    PayChase sends polite, professional payment reminders on autopilot so you never have to send another awkward "just checking in" email again.
+                </p>
+                
+                <div id="waitlist" class="max-w-md">
+                    <form class="flex flex-col sm:flex-row gap-3" onsubmit="handleWaitlist(event)">
+                        <input type="email" id="email" placeholder="your@business.com" required
+                               class="flex-1 px-5 py-4 rounded-3xl bg-white text-slate-900 placeholder:text-slate-400 border-0 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm">
+                        <button type="submit"
+                                class="px-8 py-4 rounded-3xl bg-emerald-500 hover:bg-emerald-600 transition-colors font-semibold text-sm whitespace-nowrap">
+                            Join the waitlist
+                        </button>
+                    </form>
+                    <p class="text-xs text-slate-400 mt-3 px-1">Free to join. No credit card required.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Problem vs Solution -->
+    <section class="max-w-screen-xl mx-auto px-8 py-16">
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Problem -->
+            <div class="bg-white rounded-3xl p-8 border border-slate-200">
+                <div class="flex items-center gap-x-3 mb-6">
+                    <div class="w-8 h-8 bg-rose-100 text-rose-500 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-exclamation text-sm"></i>
+                    </div>
+                    <span class="font-semibold text-rose-600">The current reality</span>
+                </div>
+                <h3 class="font-semibold text-3xl tracking-tight mb-6">Chasing payments is painful</h3>
+                <ul class="space-y-4 text-slate-600">
+                    <li class="flex items-start gap-x-3"><i class="fas fa-times mt-1.5 text-rose-400"></i> <span>You feel awkward sending follow-up emails</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fas fa-times mt-1.5 text-rose-400"></i> <span>Reminders are inconsistent and easily forgotten</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fas fa-times mt-1.5 text-rose-400"></i> <span>Clients ignore messages until you get aggressive</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fas fa-times mt-1.5 text-rose-400"></i> <span>Small businesses lose thousands in late payments every year</span></li>
+                </ul>
+            </div>
+            
+            <!-- Solution -->
+            <div class="bg-slate-900 text-white rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-6">
+                    <div class="w-8 h-8 bg-emerald-500 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-check text-sm"></i>
+                    </div>
+                    <span class="font-semibold text-emerald-400">With PayChase</span>
+                </div>
+                <h3 class="font-semibold text-3xl tracking-tight mb-6">Let automation do the work</h3>
+                <ul class="space-y-4 text-slate-300">
+                    <li class="flex items-start gap-x-3"><i class="fas fa-check mt-1.5 text-emerald-400"></i> <span>Polite, professional sequences sent automatically</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fas fa-check mt-1.5 text-emerald-400"></i> <span>Connect once and forget — it runs in the background</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fas fa-check mt-1.5 text-emerald-400"></i> <span>Smart escalation that protects your relationships</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fas fa-check mt-1.5 text-emerald-400"></i> <span>Legal templates ready when you need them most</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="max-w-screen-xl mx-auto px-8 pb-16">
+        <div class="text-center mb-12">
+            <span class="px-4 py-1 text-sm font-medium bg-slate-200 text-slate-600 rounded-3xl">Built for small businesses</span>
+            <h2 class="section-header tracking-tighter mt-4">Everything you need to get paid faster</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-white border border-slate-200 rounded-3xl p-7">
+                <div class="w-11 h-11 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-plug text-xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Connect your accounting software</h4>
+                <p class="text-slate-600">Sync with QuickBooks, Xero, or FreshBooks in seconds. Your overdue invoices flow in automatically.</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="feature-card bg-white border border-slate-200 rounded-3xl p-7">
+                <div class="w-11 h-11 bg-violet-100 text-violet-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-envelope text-xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Polite automated email sequences</h4>
+                <p class="text-slate-600">Send friendly, professional reminders at the perfect intervals — never too pushy, never too soft.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="feature-card bg-white border border-slate-200 rounded-3xl p-7">
+                <div class="w-11 h-11 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-link text-xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Instant payment link generation</h4>
+                <p class="text-slate-600">Every reminder includes a secure, one-click payment link so clients can pay immediately.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="bg-white border-t border-b border-slate-200 py-16">
+        <div class="max-w-screen-xl mx-auto px-8">
+            <div class="text-center mb-10">
+                <h2 class="section-header tracking-tighter">Simple pricing for growing businesses</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <!-- Starter -->
+                <div class="border border-slate-200 rounded-3xl p-7">
+                    <div class="mb-6">
+                        <span class="font-semibold">Starter</span>
+                        <div class="mt-4 flex items-baseline"><span class="text-5xl font-display tracking-tighter">$19</span><span class="text-slate-500 ml-1">/mo</span></div>
+                    </div>
+                    <ul class="space-y-3 text-sm mb-8">
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Up to 15 invoices/month</span></li>
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>3 automated sequences</span></li>
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Basic escalation rules</span></li>
+                    </ul>
+                    <button onclick="handleWaitlistClick()" class="w-full py-3.5 text-sm font-semibold border border-slate-300 rounded-3xl hover:bg-slate-50">Get started</button>
+                </div>
+                
+                <!-- Pro -->
+                <div class="border-2 border-slate-900 rounded-3xl p-7 relative">
+                    <div class="absolute -top-3 right-7 bg-slate-900 text-white text-xs px-4 py-1 rounded-3xl">Most popular</div>
+                    <div class="mb-6">
+                        <span class="font-semibold">Pro</span>
+                        <div class="mt-4 flex items-baseline"><span class="text-5xl font-display tracking-tighter">$49</span><span class="text-slate-500 ml-1">/mo</span></div>
+                    </div>
+                    <ul class="space-y-3 text-sm mb-8">
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Unlimited invoices</span></li>
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Full email sequences</span></li>
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Payment links + escalation</span></li>
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Legal notice templates</span></li>
+                    </ul>
+                    <button onclick="handleWaitlistClick()" class="w-full py-3.5 text-sm font-semibold bg-slate-900 text-white rounded-3xl hover:bg-slate-800">Join waitlist</button>
+                </div>
+                
+                <!-- Business -->
+                <div class="border border-slate-200 rounded-3xl p-7">
+                    <div class="mb-6">
+                        <span class="font-semibold">Business</span>
+                        <div class="mt-4 flex items-baseline"><span class="text-5xl font-display tracking-tighter">$99</span><span class="text-slate-500 ml-1">/mo</span></div>
+                    </div>
+                    <ul class="space-y-3 text-sm mb-8">
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Everything in Pro</span></li>
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Team access + roles</span></li>
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Priority support</span></li>
+                        <li class="flex gap-x-2"><i class="fas fa-check text-emerald-500 mt-1"></i> <span>Advanced analytics</span></li>
+                    </ul>
+                    <button onclick="handleWaitlistClick()" class="w-full py-3.5 text-sm font-semibold border border-slate-300 rounded-3xl hover:bg-slate-50">Join waitlist</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="max-w-screen-xl mx-auto px-8 py-16">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="section-header tracking-tighter text-center mb-10">Frequently asked questions</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-white border border-slate-200 rounded-3xl p-6">
+                    <div class="font-semibold mb-2">How does PayChase connect to my accounting software?</div>
+                    <p class="text-slate-600 text-sm">We use secure OAuth connections with QuickBooks, Xero, and FreshBooks. Your data stays private and we only read invoice information.</p>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-3xl p-6">
+                    <div class="font-semibold mb-2">Will my clients know these emails are automated?</div>
+                    <p class="text-slate-600 text-sm">No. All emails are written in a natural, human tone and come from your own email address.</p>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-3xl p-6">
+                    <div class="font-semibold mb-2">What happens at the final escalation stage?</div>
+                    <p class="text-slate-600 text-sm">You can choose to send our professionally written legal notice templates or hand the invoice off to collections.</p>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-3xl p-6">
+                    <div class="font-semibold mb-2">Can I customize the email sequences?</div>
+                    <p class="text-slate-600 text-sm">Yes. Pro and Business plans let you fully customize tone, timing, and messaging for every stage.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white">
+        <div class="max-w-screen-xl mx-auto px-8 py-10">
+            <div class="flex flex-col md:flex-row justify-between items-center text-sm text-slate-500">
+                <div class="flex items-center gap-x-2 mb-4 md:mb-0">
+                    <span>© 2025 PayChase</span>
+                </div>
+                <div class="flex gap-x-6">
+                    <a href="#" class="hover:text-slate-700">Privacy</a>
+                    <a href="#" class="hover:text-slate-700">Terms</a>
+                    <a href="#" class="hover:text-slate-700">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function handleWaitlist(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = 'Thanks! You\'re on the list';
+            btn.disabled = true;
+            btn.classList.add('!bg-emerald-600');
+            
+            setTimeout(() => {
+                alert(`Thank you! We'll send an invite to ${email} when PayChase launches.`);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.classList.remove('!bg-emerald-600');
+                document.getElementById('email').value = '';
+            }, 1800);
+        }
+        
+        function handleWaitlistClick() {
+            document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                document.getElementById('email').focus();
+            }, 800);
+        }
+        
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#0F172A');
+        }
+        initializeTailwind();
+    </script>
+</body>
+</html>

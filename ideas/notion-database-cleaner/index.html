@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotionSanitizer • Clean Notion Databases Automatically</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #6366f1;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+            font-weight: 600;
+        }
+
+        .notion-gradient {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
+
+        .section-header {
+            font-size: 2.5rem;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -.03em;
+        }
+
+        .feature-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+        }
+
+        .nav-active {
+            color: #6366f1;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-zinc-50 text-zinc-900">
+    <!-- Navbar -->
+    <nav class="border-b border-zinc-200 bg-white">
+        <div class="max-w-screen-xl mx-auto">
+            <div class="px-8 py-5 flex items-center justify-between">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-10 h-10 rounded-2xl notion-gradient flex items-center justify-center">
+                        <i class="fa-solid fa-broom text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-display text-2xl font-semibold tracking-tighter">NotionSanitizer</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-x-8 text-sm">
+                    <a href="#features" class="font-medium text-zinc-600 hover:text-zinc-900">Features</a>
+                    <a href="#pricing" class="font-medium text-zinc-600 hover:text-zinc-900">Pricing</a>
+                    <a href="#faq" class="font-medium text-zinc-600 hover:text-zinc-900">FAQ</a>
+                </div>
+                <div>
+                    <a href="#waitlist" 
+                       class="px-5 py-2.5 text-sm font-semibold bg-white border border-zinc-300 hover:bg-zinc-50 rounded-3xl transition-colors">
+                        Join waitlist
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="max-w-screen-xl mx-auto px-8 pt-16 pb-20">
+        <div class="max-w-3xl">
+            <div class="inline-flex items-center px-4 py-1.5 rounded-3xl bg-zinc-100 text-zinc-600 text-sm font-medium mb-6">
+                <i class="fa-solid fa-rocket mr-2"></i>
+                <span>Now in private beta</span>
+            </div>
+            
+            <h1 class="font-display text-6xl leading-none tracking-tighter font-semibold">
+                Clean Notion databases.<br>
+                Automatically.
+            </h1>
+            
+            <p class="mt-6 text-xl text-zinc-600 max-w-lg">
+                NotionSanitizer detects duplicates, fixes broken relations, and keeps your databases pristine — so your team can focus on work, not cleanup.
+            </p>
+            
+            <div id="waitlist" class="mt-8 max-w-md">
+                <form id="waitlist-form" class="flex flex-col sm:flex-row gap-3">
+                    <div class="flex-1">
+                        <input type="email" id="email" required
+                               class="w-full px-5 py-3.5 bg-white border border-zinc-300 focus:border-indigo-400 outline-none rounded-3xl text-sm placeholder:text-zinc-400"
+                               placeholder="you@company.com">
+                    </div>
+                    <button type="submit"
+                            class="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-semibold rounded-3xl text-sm whitespace-nowrap">
+                        Join the waitlist
+                    </button>
+                </form>
+                <p class="text-xs text-zinc-500 mt-3 px-1">Free for the first 500 users. No credit card required.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Problem vs Solution -->
+    <div class="max-w-screen-xl mx-auto px-8 pb-20">
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Problem -->
+            <div class="bg-white border border-zinc-200 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-5">
+                    <div class="w-9 h-9 flex items-center justify-center bg-red-100 text-red-600 rounded-2xl">
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="font-semibold text-xl">The Problem</h3>
+                </div>
+                <p class="text-zinc-600 mb-6">Notion power users and operations teams constantly battle messy databases. Duplicates pile up, relations break during imports, and property inconsistencies slow down reporting.</p>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-start gap-x-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>Duplicate pages across multiple databases</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>Broken relations after bulk edits</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>Inconsistent properties that break automations</span></li>
+                </ul>
+            </div>
+            
+            <!-- Solution -->
+            <div class="bg-white border border-zinc-200 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-5">
+                    <div class="w-9 h-9 flex items-center justify-center bg-emerald-100 text-emerald-600 rounded-2xl">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h3 class="font-semibold text-xl">The Solution</h3>
+                </div>
+                <p class="text-zinc-600 mb-6">NotionSanitizer runs intelligent maintenance on your Notion workspaces. It detects and merges duplicates, repairs broken relations, and cleans properties — with full versioned backups.</p>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>Automatic duplicate detection across pages</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>One-click broken relation fixer</span></li>
+                    <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>Scheduled maintenance with audit logs</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div id="features" class="max-w-screen-xl mx-auto px-8 pb-20">
+        <div class="text-center mb-12">
+            <span class="text-indigo-600 font-semibold text-sm tracking-wider">POWERFUL TOOLS</span>
+            <h2 class="font-display text-4xl tracking-tighter font-semibold mt-3">Everything you need to keep<br>your databases healthy</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-white border border-zinc-200 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-copy text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Duplicate Detection</h4>
+                <p class="text-zinc-600">Scans across all connected databases to identify duplicate pages using smart similarity matching. Merge or archive with one click.</p>
+                <div class="mt-6 pt-6 border-t text-xs font-medium text-zinc-500 flex items-center gap-x-2">
+                    <i class="fa-solid fa-sync"></i>
+                    <span>Runs in under 30 seconds</span>
+                </div>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="feature-card bg-white border border-zinc-200 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-link text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Broken Relation Fixer</h4>
+                <p class="text-zinc-600">Automatically detects and repairs broken relation links caused by page moves, deletions, or bulk imports across your workspace.</p>
+                <div class="mt-6 pt-6 border-t text-xs font-medium text-zinc-500 flex items-center gap-x-2">
+                    <i class="fa-solid fa-sync"></i>
+                    <span>98% auto-fix rate</span>
+                </div>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="feature-card bg-white border border-zinc-200 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-broom text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Bulk Property Cleanup</h4>
+                <p class="text-zinc-600">Standardize properties, remove empty fields, fix select options, and enforce consistent formatting across thousands of pages.</p>
+                <div class="mt-6 pt-6 border-t text-xs font-medium text-zinc-500 flex items-center gap-x-2">
+                    <i class="fa-solid fa-sync"></i>
+                    <span>Batch processing available</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing -->
+    <div id="pricing" class="max-w-screen-xl mx-auto px-8 pb-20">
+        <div class="text-center mb-10">
+            <h2 class="font-display text-4xl tracking-tighter font-semibold">Simple, transparent pricing</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <!-- Free -->
+            <div class="bg-white border border-zinc-200 rounded-3xl p-8">
+                <div class="mb-6">
+                    <span class="font-semibold">Starter</span>
+                    <div class="mt-4">
+                        <span class="text-4xl font-semibold">$0</span>
+                    </div>
+                    <span class="text-sm text-zinc-500">Forever free</span>
+                </div>
+                <ul class="space-y-3 text-sm mb-8">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Duplicate detection (up to 500 pages)</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>1 scheduled run per week</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Basic backups</span></li>
+                </ul>
+                <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" 
+                        class="w-full py-3 border border-zinc-300 hover:bg-zinc-50 rounded-3xl text-sm font-semibold">
+                    Join waitlist
+                </button>
+            </div>
+            
+            <!-- Pro -->
+            <div class="bg-white border-2 border-indigo-600 rounded-3xl p-8 relative">
+                <div class="absolute -top-3 right-8 bg-indigo-600 text-white text-xs font-bold px-4 py-1 rounded-3xl">MOST POPULAR</div>
+                <div class="mb-6">
+                    <span class="font-semibold">Pro</span>
+                    <div class="mt-4">
+                        <span class="text-4xl font-semibold">$19</span>
+                        <span class="text-zinc-500">/mo</span>
+                    </div>
+                </div>
+                <ul class="space-y-3 text-sm mb-8">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Unlimited duplicate detection</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Broken relation fixer</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Versioned backups</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Daily scheduled runs</span></li>
+                </ul>
+                <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" 
+                        class="w-full py-3 bg-indigo-600 text-white hover:bg-indigo-700 rounded-3xl text-sm font-semibold">
+                    Join waitlist
+                </button>
+            </div>
+            
+            <!-- Team -->
+            <div class="bg-white border border-zinc-200 rounded-3xl p-8">
+                <div class="mb-6">
+                    <span class="font-semibold">Team</span>
+                    <div class="mt-4">
+                        <span class="text-4xl font-semibold">$49</span>
+                        <span class="text-zinc-500">/mo</span>
+                    </div>
+                </div>
+                <ul class="space-y-3 text-sm mb-8">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Everything in Pro</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Bulk property cleanup</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Team workspaces</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>Priority support</span></li>
+                </ul>
+                <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" 
+                        class="w-full py-3 border border-zinc-300 hover:bg-zinc-50 rounded-3xl text-sm font-semibold">
+                    Join waitlist
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div id="faq" class="max-w-screen-xl mx-auto px-8 pb-20">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="font-display text-4xl tracking-tighter font-semibold text-center mb-10">Frequently asked questions</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-white border border-zinc-200 rounded-3xl p-6">
+                    <h4 class="font-semibold">Does NotionSanitizer require access to my entire workspace?</h4>
+                    <p class="text-sm text-zinc-600 mt-2">You only grant access to the specific databases you want cleaned. We never access pages outside those databases.</p>
+                </div>
+                
+                <div class="bg-white border border-zinc-200 rounded-3xl p-6">
+                    <h4 class="font-semibold">What happens to my data during cleaning?</h4>
+                    <p class="text-sm text-zinc-600 mt-2">Every change creates a versioned backup. You can preview all proposed changes before they are applied and roll back anytime.</p>
+                </div>
+                
+                <div class="bg-white border border-zinc-200 rounded-3xl p-6">
+                    <h4 class="font-semibold">How often can I run maintenance?</h4>
+                    <p class="text-sm text-zinc-600 mt-2">Pro and Team plans support daily scheduled runs. Starter users get one weekly automated scan.</p>
+                </div>
+                
+                <div class="bg-white border border-zinc-200 rounded-3xl p-6">
+                    <h4 class="font-semibold">Is my Notion data secure?</h4>
+                    <p class="text-sm text-zinc-600 mt-2">We use official Notion OAuth and store nothing except temporary processing data. All backups are encrypted at rest.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-200 bg-white">
+        <div class="max-w-screen-xl mx-auto px-8 py-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-y-4 text-sm text-zinc-500">
+                <div class="flex items-center gap-x-2">
+                    <span>© 2025 NotionSanitizer</span>
+                </div>
+                <div class="flex items-center gap-x-6">
+                    <a href="#" class="hover:text-zinc-700">Privacy</a>
+                    <a href="#" class="hover:text-zinc-700">Security</a>
+                    <a href="#" class="hover:text-zinc-700">Docs</a>
+                    <a href="#" class="hover:text-zinc-700">Twitter</a>
+                </div>
+                <div>
+                    Made for Notion power users
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#6366f1');
+        }
+        
+        // Waitlist form handler
+        function setupWaitlistForm() {
+            const form = document.getElementById('waitlist-form');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const emailInput = document.getElementById('email');
+                
+                const originalText = form.innerHTML;
+                
+                form.innerHTML = `
+                    <div class="flex items-center justify-center gap-x-3 px-6 py-3.5 bg-emerald-100 text-emerald-700 rounded-3xl text-sm font-medium w-full">
+                        <i class="fa-solid fa-check"></i>
+                        <span>You're on the list! We'll email you shortly.</span>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    form.innerHTML = originalText;
+                    emailInput.value = '';
+                    // Re-attach event listener since we replaced the HTML
+                    setupWaitlistForm();
+                }, 4500);
+            });
+        }
+        
+        // Initialize everything
+        function init() {
+            initializeTailwind();
+            setupWaitlistForm();
+            
+            // Smooth scroll for nav links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+        
+        window.onload = init;
+    </script>
+</body>
+</html>

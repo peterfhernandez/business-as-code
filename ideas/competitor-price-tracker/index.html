@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PriceWatchAI - Automated Competitor Price Tracking for E-commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans">
+    <!-- Navbar -->
+    <nav class="border-b border-slate-800 bg-slate-950/95 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-screen-xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-chart-line text-white text-xl"></i>
+                </div>
+                <span class="font-semibold text-2xl tracking-tight">PriceWatchAI</span>
+            </div>
+            <div class="flex items-center gap-x-8 text-sm">
+                <a href="#problem" class="hover:text-emerald-400 transition-colors">Problem</a>
+                <a href="#features" class="hover:text-emerald-400 transition-colors">Features</a>
+                <a href="#pricing" class="hover:text-emerald-400 transition-colors">Pricing</a>
+                <a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
+            </div>
+            <a href="#waitlist" class="px-5 py-2.5 text-sm font-medium bg-white text-slate-950 rounded-xl hover:bg-emerald-50 transition-colors">Join waitlist</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="max-w-screen-xl mx-auto px-6 pt-20 pb-24">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-sm mb-6">
+                <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span class="text-emerald-400 font-medium">Now in private beta</span>
+            </div>
+            <h1 class="text-6xl font-semibold tracking-tighter leading-none mb-6">Never miss a competitor price change again.</h1>
+            <p class="text-xl text-slate-400 mb-10 max-w-2xl mx-auto">PriceWatchAI automatically tracks your competitors' prices daily, alerts you instantly, and shows you the real margin impact—so you can price smarter without the manual grind.</p>
+            
+            <!-- Waitlist Form -->
+            <div id="waitlist" class="max-w-md mx-auto">
+                <form class="flex flex-col sm:flex-row gap-3" onsubmit="event.preventDefault(); alert('Thanks! You\'ve been added to the PriceWatchAI waitlist. We\'ll email you when we open access.'); this.reset();">
+                    <input type="email" placeholder="Work email address" required class="flex-1 bg-slate-900 border border-slate-700 focus:border-emerald-500 rounded-2xl px-5 py-4 text-sm placeholder:text-slate-500 outline-none">
+                    <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 transition-colors text-white font-semibold px-8 rounded-2xl text-sm py-4 whitespace-nowrap">Join the waitlist</button>
+                </form>
+                <p class="text-xs text-slate-500 mt-3">Free during beta. No credit card required.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem vs Solution -->
+    <section id="problem" class="bg-slate-900 py-20 border-y border-slate-800">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Problem -->
+                <div class="bg-slate-950 border border-slate-800 rounded-3xl p-9">
+                    <div class="flex items-center gap-x-3 mb-5">
+                        <i class="fa-solid fa-clock text-red-400 text-xl"></i>
+                        <span class="uppercase tracking-[2px] text-xs font-semibold text-red-400">The old way</span>
+                    </div>
+                    <h3 class="text-3xl font-semibold tracking-tight mb-6">Manual price checking is killing your margins</h3>
+                    <ul class="space-y-4 text-slate-400">
+                        <li class="flex gap-x-3"><i class="fa-solid fa-times mt-1 text-red-400"></i> Hours spent daily browsing competitor sites</li>
+                        <li class="flex gap-x-3"><i class="fa-solid fa-times mt-1 text-red-400"></i> Missed price drops that cost you sales</li>
+                        <li class="flex gap-x-3"><i class="fa-solid fa-times mt-1 text-red-400"></i> Inconsistent data and human errors</li>
+                        <li class="flex gap-x-3"><i class="fa-solid fa-times mt-1 text-red-400"></i> No clear view of how price changes affect your margins</li>
+                    </ul>
+                </div>
+                
+                <!-- Solution -->
+                <div class="bg-emerald-950/30 border border-emerald-900/60 rounded-3xl p-9">
+                    <div class="flex items-center gap-x-3 mb-5">
+                        <i class="fa-solid fa-robot text-emerald-400 text-xl"></i>
+                        <span class="uppercase tracking-[2px] text-xs font-semibold text-emerald-400">With PriceWatchAI</span>
+                    </div>
+                    <h3 class="text-3xl font-semibold tracking-tight mb-6">Automated intelligence that protects your pricing edge</h3>
+                    <ul class="space-y-4 text-emerald-200">
+                        <li class="flex gap-x-3"><i class="fa-solid fa-check mt-1 text-emerald-400"></i> Daily automated scraping of every competitor</li>
+                        <li class="flex gap-x-3"><i class="fa-solid fa-check mt-1 text-emerald-400"></i> Instant alerts the moment prices change</li>
+                        <li class="flex gap-x-3"><i class="fa-solid fa-check mt-1 text-emerald-400"></i> Clean historical charts and matching products</li>
+                        <li class="flex gap-x-3"><i class="fa-solid fa-check mt-1 text-emerald-400"></i> Built-in margin impact calculator</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="max-w-screen-xl mx-auto px-6 py-20">
+        <div class="text-center mb-14">
+            <span class="text-emerald-400 text-sm font-semibold tracking-widest">CORE CAPABILITIES</span>
+            <h2 class="text-4xl font-semibold tracking-tight mt-3">Everything you need to stay ahead on price</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-sync fa-lg"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Daily automated scraping</h4>
+                <p class="text-slate-400">PriceWatchAI crawls your competitors every 24 hours and matches their products to yours automatically using intelligent product matching.</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-bell fa-lg"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Real-time alerts</h4>
+                <p class="text-slate-400">Get notified instantly via email or Slack the moment a competitor changes their price. Never be the last one to know again.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-chart-area fa-lg"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Charts + margin calculator</h4>
+                <p class="text-slate-400">See full price history and instantly calculate how any price change will affect your gross margin before you decide to match.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="bg-slate-900 py-20 border-y border-slate-800">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-semibold tracking-tight">Simple pricing for serious operators</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <!-- Starter -->
+                <div class="bg-slate-950 border border-slate-700 rounded-3xl p-8">
+                    <div class="mb-6">
+                        <span class="font-semibold">Starter</span>
+                        <div class="mt-4 flex items-baseline"><span class="text-5xl font-semibold">$29</span><span class="text-slate-400 ml-1">/mo</span></div>
+                    </div>
+                    <ul class="space-y-3 text-sm mb-8 text-slate-300">
+                        <li>Up to 5 competitors</li>
+                        <li>Daily automated tracking</li>
+                        <li>Email alerts</li>
+                        <li>Basic price charts</li>
+                    </ul>
+                    <button class="w-full py-3.5 rounded-2xl border border-slate-700 hover:bg-slate-800 transition-colors text-sm font-medium">Join waitlist</button>
+                </div>
+                
+                <!-- Growth -->
+                <div class="bg-emerald-900/20 border border-emerald-700 rounded-3xl p-8 relative">
+                    <div class="absolute -top-3 right-8 bg-emerald-500 text-xs px-3 py-1 rounded-full font-semibold">Most popular</div>
+                    <div class="mb-6">
+                        <span class="font-semibold">Growth</span>
+                        <div class="mt-4 flex items-baseline"><span class="text-5xl font-semibold">$79</span><span class="text-emerald-300 ml-1">/mo</span></div>
+                    </div>
+                    <ul class="space-y-3 text-sm mb-8 text-emerald-100">
+                        <li>Up to 25 competitors</li>
+                        <li>Slack + email alerts</li>
+                        <li>Historical price charts</li>
+                        <li>Margin impact calculator</li>
+                        <li>Competitor product matching</li>
+                    </ul>
+                    <button class="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 transition-colors text-sm font-semibold">Join waitlist</button>
+                </div>
+                
+                <!-- Scale -->
+                <div class="bg-slate-950 border border-slate-700 rounded-3xl p-8">
+                    <div class="mb-6">
+                        <span class="font-semibold">Scale</span>
+                        <div class="mt-4 flex items-baseline"><span class="text-5xl font-semibold">$149</span><span class="text-slate-400 ml-1">/mo</span></div>
+                    </div>
+                    <ul class="space-y-3 text-sm mb-8 text-slate-300">
+                        <li>Unlimited competitors</li>
+                        <li>Team access + API access</li>
+                        <li>Advanced analytics</li>
+                        <li>Priority support</li>
+                        <li>Custom matching rules</li>
+                    </ul>
+                    <button class="w-full py-3.5 rounded-2xl border border-slate-700 hover:bg-slate-800 transition-colors text-sm font-medium">Join waitlist</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="max-w-screen-xl mx-auto px-6 py-20">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="text-4xl font-semibold tracking-tight text-center mb-12">Frequently asked questions</h2>
+            
+            <div class="space-y-6">
+                <div class="border-b border-slate-800 pb-6">
+                    <h4 class="font-semibold mb-2">How does the daily scraping work?</h4>
+                    <p class="text-slate-400">We run automated crawlers every 24 hours across your selected competitor websites and match products using our proprietary matching engine.</p>
+                </div>
+                <div class="border-b border-slate-800 pb-6">
+                    <h4 class="font-semibold mb-2">Which platforms do you support for alerts?</h4>
+                    <p class="text-slate-400">You can receive alerts via email and Slack. Enterprise plans also support webhook and Microsoft Teams.</p>
+                </div>
+                <div class="border-b border-slate-800 pb-6">
+                    <h4 class="font-semibold mb-2">How accurate is the margin impact calculator?</h4>
+                    <p class="text-slate-400">You can input your cost basis per product. The calculator instantly shows how competitor price moves would affect your gross margin.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">When will I get access?</h4>
+                    <p class="text-slate-400">We're onboarding waitlist members in waves. Beta users get full access and early pricing locked in for 12 months.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-12">
+        <div class="max-w-screen-xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm text-slate-500">
+            <div>© 2025 PriceWatchAI. All rights reserved.</div>
+            <div class="flex gap-x-6 mt-4 md:mt-0">
+                <a href="#" class="hover:text-slate-300">Privacy</a>
+                <a href="#" class="hover:text-slate-300">Terms</a>
+                <a href="#" class="hover:text-slate-300">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

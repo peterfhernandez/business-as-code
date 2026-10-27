@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboardly • Client Onboarding Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 font-sans">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">O</span>
+                    </div>
+                    <span class="font-semibold text-2xl tracking-tight">Onboardly</span>
+                </div>
+                <div class="hidden md:flex items-center gap-x-8 text-sm">
+                    <a href="#problem" class="text-slate-600 hover:text-slate-900">How it works</a>
+                    <a href="#features" class="text-slate-600 hover:text-slate-900">Features</a>
+                    <a href="#pricing" class="text-slate-600 hover:text-slate-900">Pricing</a>
+                    <a href="#faq" class="text-slate-600 hover:text-slate-900">FAQ</a>
+                </div>
+                <a href="#waitlist" class="px-5 py-2.5 text-sm font-medium bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-colors">Join waitlist</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="max-w-screen-xl mx-auto px-6 pt-16 pb-20">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-sm mb-6">
+                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="font-medium text-slate-600">Now used by 240+ freelancers</span>
+            </div>
+            
+            <h1 class="text-6xl font-semibold tracking-tighter text-slate-900 leading-none mb-6">
+                Stop chasing clients<br>for missing files.
+            </h1>
+            <p class="text-xl text-slate-600 max-w-lg mx-auto mb-10">
+                Onboardly gives freelance consultants and boutique agencies branded intake forms, automated reminders, and a live progress dashboard so projects start on time.
+            </p>
+
+            <!-- Waitlist Form -->
+            <form id="waitlist" action="#" class="max-w-md mx-auto">
+                <div class="flex gap-3">
+                    <input type="email" placeholder="your@agency.com" required
+                           class="flex-1 px-5 py-4 border border-slate-300 rounded-2xl focus:outline-none focus:border-indigo-500 text-sm">
+                    <button type="submit" 
+                            class="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-semibold rounded-2xl text-sm whitespace-nowrap">
+                        Join waitlist
+                    </button>
+                </div>
+                <p class="text-xs text-slate-500 mt-3">Free during beta • No credit card required</p>
+            </form>
+        </div>
+    </section>
+
+    <!-- Problem vs Solution -->
+    <section id="problem" class="max-w-screen-xl mx-auto px-6 pb-20">
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Problem -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-6">
+                    <i class="fa-solid fa-exclamation-triangle text-red-500 text-xl"></i>
+                    <span class="font-semibold text-red-600">The old way</span>
+                </div>
+                <h3 class="text-2xl font-semibold tracking-tight mb-6">Client onboarding is broken</h3>
+                <ul class="space-y-4 text-slate-600">
+                    <li class="flex gap-3"><i class="fa-solid fa-times mt-1 text-red-400"></i> Clients forget to send contracts and brand assets</li>
+                    <li class="flex gap-3"><i class="fa-solid fa-times mt-1 text-red-400"></i> Forms get lost in email threads</li>
+                    <li class="flex gap-3"><i class="fa-solid fa-times mt-1 text-red-400"></i> Projects delayed 4–7 days on average</li>
+                    <li class="flex gap-3"><i class="fa-solid fa-times mt-1 text-red-400"></i> You manually chase every missing item</li>
+                </ul>
+            </div>
+            
+            <!-- Solution -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-6">
+                    <i class="fa-solid fa-check-circle text-emerald-500 text-xl"></i>
+                    <span class="font-semibold text-emerald-600">With Onboardly</span>
+                </div>
+                <h3 class="text-2xl font-semibold tracking-tight mb-6">Everything arrives on time</h3>
+                <ul class="space-y-4 text-slate-600">
+                    <li class="flex gap-3"><i class="fa-solid fa-check mt-1 text-emerald-500"></i> Branded intake portal sent in one click</li>
+                    <li class="flex gap-3"><i class="fa-solid fa-check mt-1 text-emerald-500"></i> File requests with automatic deadlines</li>
+                    <li class="flex gap-3"><i class="fa-solid fa-check mt-1 text-emerald-500"></i> Clients see exactly what’s missing</li>
+                    <li class="flex gap-3"><i class="fa-solid fa-check mt-1 text-emerald-500"></i> You export everything straight to your CRM</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="max-w-screen-xl mx-auto px-6 pb-20">
+        <div class="text-center mb-12">
+            <span class="text-indigo-600 font-semibold">Built for freelancers</span>
+            <h2 class="text-4xl font-semibold tracking-tighter mt-2">Everything you need to launch projects faster</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-file-alt text-indigo-600 text-2xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">Custom branded intake forms</h3>
+                <p class="text-slate-600">Create beautiful, on-brand questionnaires with your logo, colors, and custom questions. Send a single link instead of scattered emails.</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-cloud-upload-alt text-indigo-600 text-2xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">File requests with deadlines</h3>
+                <p class="text-slate-600">Request specific files with due dates. Clients get gentle reminders and you get notified the moment everything lands in your inbox.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8 hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-chart-line text-indigo-600 text-2xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">Progress dashboard for clients</h3>
+                <p class="text-slate-600">Clients see a clean, simple dashboard showing exactly what’s been submitted and what’s still missing. Zero confusion.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="max-w-screen-xl mx-auto px-6 pb-20">
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-semibold tracking-tighter">Simple pricing for freelancers</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <!-- Starter -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="mb-6">
+                    <span class="font-semibold">Starter</span>
+                    <div class="mt-4"><span class="text-4xl font-semibold">$0</span><span class="text-slate-500">/mo</span></div>
+                </div>
+                <ul class="space-y-3 text-sm mb-8 text-slate-600">
+                    <li>Up to 3 active clients</li>
+                    <li>Branded intake forms</li>
+                    <li>Basic file requests</li>
+                    <li>Email support</li>
+                </ul>
+                <button class="w-full py-3 border border-slate-300 rounded-2xl font-medium text-sm">Join waitlist</button>
+            </div>
+            
+            <!-- Pro -->
+            <div class="bg-white border-2 border-indigo-600 rounded-3xl p-8 relative">
+                <div class="absolute -top-3 right-6 bg-indigo-600 text-white text-xs px-3 py-1 rounded-full">Most popular</div>
+                <div class="mb-6">
+                    <span class="font-semibold">Professional</span>
+                    <div class="mt-4"><span class="text-4xl font-semibold">$29</span><span class="text-slate-500">/mo</span></div>
+                </div>
+                <ul class="space-y-3 text-sm mb-8 text-slate-600">
+                    <li>Unlimited clients</li>
+                    <li>Automated reminder sequences</li>
+                    <li>Client progress dashboard</li>
+                    <li>CRM export (Notion, Airtable, CSV)</li>
+                    <li>Priority support</li>
+                </ul>
+                <button class="w-full py-3 bg-indigo-600 text-white rounded-2xl font-medium text-sm">Join waitlist</button>
+            </div>
+            
+            <!-- Agency -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="mb-6">
+                    <span class="font-semibold">Agency</span>
+                    <div class="mt-4"><span class="text-4xl font-semibold">$79</span><span class="text-slate-500">/mo</span></div>
+                </div>
+                <ul class="space-y-3 text-sm mb-8 text-slate-600">
+                    <li>Everything in Professional</li>
+                    <li>Team seats & roles</li>
+                    <li>White-label client portal</li>
+                    <li>Advanced analytics</li>
+                    <li>Dedicated success manager</li>
+                </ul>
+                <button class="w-full py-3 border border-slate-300 rounded-2xl font-medium text-sm">Join waitlist</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="max-w-screen-xl mx-auto px-6 pb-20">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="text-3xl font-semibold tracking-tight text-center mb-10">Frequently asked questions</h2>
+            
+            <div class="space-y-4">
+                <details class="bg-white border border-slate-200 rounded-2xl p-6 group">
+                    <summary class="font-medium flex justify-between cursor-pointer">How does the waitlist work?<i class="fa-solid fa-chevron-down group-open:rotate-180 transition-transform"></i></summary>
+                    <p class="mt-4 text-slate-600 text-sm">Sign up with your email and you’ll be notified the moment beta access opens. Early users get lifetime pricing.</p>
+                </details>
+                
+                <details class="bg-white border border-slate-200 rounded-2xl p-6 group">
+                    <summary class="font-medium flex justify-between cursor-pointer">Can I customize the forms with my branding?<i class="fa-solid fa-chevron-down group-open:rotate-180 transition-transform"></i></summary>
+                    <p class="mt-4 text-slate-600 text-sm">Yes. Every form includes your logo, brand colors, and custom questions. Clients never see the Onboardly branding.</p>
+                </details>
+                
+                <details class="bg-white border border-slate-200 rounded-2xl p-6 group">
+                    <summary class="font-medium flex justify-between cursor-pointer">Does Onboardly integrate with my CRM?<i class="fa-solid fa-chevron-down group-open:rotate-180 transition-transform"></i></summary>
+                    <p class="mt-4 text-slate-600 text-sm">Collected data exports directly to Notion, Airtable, Google Sheets, or CSV. Zapier support coming soon.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white">
+        <div class="max-w-screen-xl mx-auto px-6 py-10">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-y-4 text-sm text-slate-500">
+                <div>© 2025 Onboardly. Built for freelancers, by freelancers.</div>
+                <div class="flex gap-x-6">
+                    <a href="#" class="hover:text-slate-700">Twitter</a>
+                    <a href="#" class="hover:text-slate-700">Product Hunt</a>
+                    <a href="#" class="hover:text-slate-700">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tailwind script already loaded
+        // Simple form handler
+        document.getElementById('waitlist').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'You\'re on the list!';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                alert('Thanks! We\'ll email you when beta opens.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                this.reset();
+            }, 1200);
+        });
+        
+        // Make FAQ details nicer on mobile
+        console.log('%c[Onboardly] Landing page ready', 'color:#64748b');
+    </script>
+</body>
+</html>
