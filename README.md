@@ -23,8 +23,8 @@ An AI-driven multi-agent framework built with **CrewAI** and powered by **xAI Gr
 ├── ideas/                     # Output directory for generated MVP landing pages
 │   ├── <idea-slug-1>/
 │   │   └── index.html
-│   └── ...
-├── ideas_validation_report.md # Final scorecard report ranking all 10 ideas
+│   ├── ...
+│   └── ideas_validation_report.md # Final scorecard report ranking all the ideas
 ├── AI_GUIDELINES.md           # Instructions & rules for AI assistants operating in this codebase
 └── .env                       # API keys and repository configuration
 ```
@@ -58,7 +58,7 @@ python .\ideas-scraper.py
 ```
 
 ### Phase 2: Market Validation & Technical Scoring
-Runs the **Market & Monetization Analyst** and **Technical Lead** agents. It scans the generated ideas in `ideas/`, evaluates customer willingness to pay, calculates dev hours and hosting costs, and generates `ideas_validation_report.md`.
+Runs the **Market & Monetization Analyst** and **Technical Lead** agents. It scans the generated ideas in `ideas/`, evaluates customer willingness to pay, calculates dev hours and hosting costs, and saves the ranked report to `ideas/ideas_validation_report.md` (to GitHub when credentials are set, otherwise locally; never both). Run `git pull` afterwards to get it locally.
 
 ```powershell
 python .\validate-ideas.py
