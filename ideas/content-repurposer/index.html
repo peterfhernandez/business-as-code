@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepurposeFlow • Turn 1 Video Into 10+ Posts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #6366f1;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+            font-weight: 600;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        }
+
+        .section-header {
+            font-size: 2.25rem;
+            line-height: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -.025em;
+        }
+
+        .feature-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+        }
+
+        .nav-active {
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .pricing-card {
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .faq-question {
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <!-- Navbar -->
+    <nav class="border-b border-zinc-800 bg-zinc-950 sticky top-0 z-50">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-x-3">
+                    <div class="flex items-center gap-x-2">
+                        <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-sync text-white text-xl"></i>
+                        </div>
+                        <span class="font-display text-2xl font-semibold tracking-tighter">RepurposeFlow</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-x-8 text-sm">
+                    <a href="#features" class="hover:text-zinc-300 transition-colors">Features</a>
+                    <a href="#pricing" class="hover:text-zinc-300 transition-colors">Pricing</a>
+                    <a href="#faq" class="hover:text-zinc-300 transition-colors">FAQ</a>
+                </div>
+                <div class="flex items-center gap-x-3">
+                    <a href="#waitlist" 
+                       class="px-4 py-2 text-sm font-medium rounded-2xl border border-zinc-700 hover:bg-zinc-900 transition-colors">
+                        Join waitlist
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="max-w-screen-xl mx-auto px-6 pt-16 pb-20">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center gap-x-2 bg-zinc-900 border border-zinc-800 rounded-3xl px-4 py-1.5 mb-6">
+                <div class="flex items-center">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span class="ml-2 text-xs font-medium text-emerald-400">Now in private beta</span>
+                </div>
+            </div>
+            
+            <h1 class="font-display text-6xl tracking-tighter leading-none mb-6">
+                Turn one long video<br>into 10+ platform posts.
+            </h1>
+            <p class="text-xl text-zinc-400 max-w-md mx-auto mb-10">
+                RepurposeFlow uses AI to automatically detect chapters, generate platform-native captions, 
+                and export ready-to-post content for creators and agencies.
+            </p>
+            
+            <!-- Waitlist Form -->
+            <div id="waitlist" class="max-w-md mx-auto">
+                <form id="waitlist-form" class="flex gap-3" onsubmit="submitWaitlist(event)">
+                    <div class="flex-1">
+                        <input type="email" id="email" required 
+                               class="w-full px-5 py-3.5 bg-zinc-900 border border-zinc-700 focus:border-indigo-600 rounded-3xl text-sm placeholder:text-zinc-500 focus:outline-none"
+                               placeholder="your@email.com">
+                    </div>
+                    <button type="submit" 
+                            class="px-7 py-3.5 bg-white hover:bg-zinc-100 transition-all text-zinc-900 font-semibold rounded-3xl text-sm whitespace-nowrap">
+                        Join waitlist
+                    </button>
+                </form>
+                <p class="text-xs text-zinc-500 mt-3">Join 2,847 creators already on the list</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem vs Solution -->
+    <section class="max-w-screen-xl mx-auto px-6 py-16 border-t border-zinc-800">
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Problem -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-6">
+                    <i class="fa-solid fa-clock text-red-400 text-xl"></i>
+                    <span class="font-semibold text-red-400">The Problem</span>
+                </div>
+                <h3 class="font-display text-3xl tracking-tight mb-4">Manual repurposing is killing your momentum</h3>
+                <ul class="space-y-3 text-zinc-400">
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-red-400 mt-1"></i> <span>Spending 4-6 hours chopping one podcast into clips</span></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-red-400 mt-1"></i> <span>Rewriting the same caption for TikTok, LinkedIn, X, and YouTube</span></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-red-400 mt-1"></i> <span>Forgetting to add trending hashtags and platform-specific CTAs</span></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-red-400 mt-1"></i> <span>Manually exporting and scheduling across 5 different tools</span></li>
+                </ul>
+            </div>
+            
+            <!-- Solution -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-6">
+                    <i class="fa-solid fa-rocket text-emerald-400 text-xl"></i>
+                    <span class="font-semibold text-emerald-400">The Solution</span>
+                </div>
+                <h3 class="font-display text-3xl tracking-tight mb-4">One upload. 10+ posts. Done in minutes.</h3>
+                <ul class="space-y-3 text-zinc-400">
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>AI detects chapters and best moments automatically</span></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Platform-native formatting and tone applied instantly</span></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Smart captions + trending hashtag suggestions included</span></li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>One-click export to Notion, Google Calendar, or Buffer</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="max-w-screen-xl mx-auto px-6 py-16">
+        <div class="text-center mb-12">
+            <span class="text-indigo-400 font-semibold text-sm tracking-widest">POWERFUL FEATURES</span>
+            <h2 class="font-display text-4xl tracking-tight mt-3">Everything you need to repurpose at scale</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-600/10 flex items-center justify-center rounded-2xl mb-6">
+                    <i class="fa-solid fa-upload text-indigo-400 text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Upload long-form video or text</h4>
+                <p class="text-zinc-400">Drop in a YouTube video, podcast, or blog post. We support MP4, MOV, and text files up to 3 hours long.</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-600/10 flex items-center justify-center rounded-2xl mb-6">
+                    <i class="fa-solid fa-magic text-indigo-400 text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">AI chapter and clip detection</h4>
+                <p class="text-zinc-400">Our model finds high-engagement moments, natural chapters, and creates 10-25 perfectly sized clips automatically.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-600/10 flex items-center justify-center rounded-2xl mb-6">
+                    <i class="fa-solid fa-share-alt text-indigo-400 text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Multi-platform formatting presets</h4>
+                <p class="text-zinc-400">Instantly adapt content for TikTok, Instagram Reels, LinkedIn, X, and YouTube Shorts with correct aspect ratios and tone.</p>
+            </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-6 mt-6">
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex items-start gap-5">
+                <div class="w-12 h-12 bg-indigo-600/10 flex-shrink-0 flex items-center justify-center rounded-2xl">
+                    <i class="fa-solid fa-comment-dots text-indigo-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-xl mb-3">Caption and hashtag generator</h4>
+                    <p class="text-zinc-400">AI writes scroll-stopping captions and suggests 15-30 relevant hashtags per platform based on current trends.</p>
+                </div>
+            </div>
+            
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex items-start gap-5">
+                <div class="w-12 h-12 bg-indigo-600/10 flex-shrink-0 flex items-center justify-center rounded-2xl">
+                    <i class="fa-solid fa-calendar text-indigo-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-xl mb-3">Scheduling calendar export</h4>
+                    <p class="text-zinc-400">Export your content calendar directly to Google Calendar, Notion, or CSV. Bulk schedule posts with one click.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="max-w-screen-xl mx-auto px-6 py-16 border-t border-zinc-800">
+        <div class="text-center mb-10">
+            <span class="text-indigo-400 font-semibold text-sm tracking-widest">PRICING</span>
+            <h2 class="font-display text-4xl tracking-tight mt-3">Simple plans for creators and teams</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <!-- Starter -->
+            <div class="pricing-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div>
+                    <span class="font-semibold">Starter</span>
+                    <div class="mt-5">
+                        <span class="text-5xl font-display tracking-tighter">$0</span>
+                    </div>
+                    <p class="text-sm text-zinc-400 mt-1">Forever free</p>
+                </div>
+                <ul class="mt-8 space-y-3 text-sm">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>3 repurposes per month</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>Basic AI clip detection</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>3 platform presets</span></li>
+                </ul>
+                <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" 
+                        class="mt-8 w-full py-3 text-sm border border-zinc-700 hover:bg-zinc-800 transition-colors rounded-3xl font-medium">
+                    Join waitlist
+                </button>
+            </div>
+            
+            <!-- Creator -->
+            <div class="pricing-card bg-zinc-900 border border-indigo-600 rounded-3xl p-8 relative">
+                <div class="absolute -top-3 right-8 bg-indigo-600 text-xs font-bold px-4 py-1 rounded-3xl">Most popular</div>
+                <div>
+                    <span class="font-semibold">Creator</span>
+                    <div class="mt-5">
+                        <span class="text-5xl font-display tracking-tighter">$19</span>
+                        <span class="text-zinc-400">/mo</span>
+                    </div>
+                </div>
+                <ul class="mt-8 space-y-3 text-sm">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>Unlimited repurposes</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>Advanced chapter detection</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>All 8 platform presets</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>Caption + hashtag generator</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>Calendar export</span></li>
+                </ul>
+                <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" 
+                        class="mt-8 w-full py-3 bg-white text-zinc-900 hover:bg-zinc-100 transition-colors rounded-3xl font-semibold text-sm">
+                    Join waitlist
+                </button>
+            </div>
+            
+            <!-- Agency -->
+            <div class="pricing-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div>
+                    <span class="font-semibold">Agency</span>
+                    <div class="mt-5">
+                        <span class="text-5xl font-display tracking-tighter">$49</span>
+                        <span class="text-zinc-400">/mo</span>
+                    </div>
+                </div>
+                <ul class="mt-8 space-y-3 text-sm">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>Everything in Creator</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>5 team seats included</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>Client workspace access</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>Priority support</span></li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span>Bulk scheduling API</span></li>
+                </ul>
+                <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" 
+                        class="mt-8 w-full py-3 text-sm border border-zinc-700 hover:bg-zinc-800 transition-colors rounded-3xl font-medium">
+                    Join waitlist
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="max-w-screen-xl mx-auto px-6 py-16 border-t border-zinc-800">
+        <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-10">
+                <span class="text-indigo-400 font-semibold text-sm tracking-widest">QUESTIONS?</span>
+                <h2 class="font-display text-4xl tracking-tight mt-3">Frequently asked questions</h2>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                    <div onclick="this.nextElementSibling.classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
+                        <span class="font-medium">How accurate is the AI clip detection?</span>
+                        <i class="fa-solid fa-chevron-down text-zinc-400"></i>
+                    </div>
+                    <div class="hidden mt-4 text-sm text-zinc-400">
+                        Our model is trained on 40,000+ hours of creator content and achieves 87% accuracy on high-performing clips according to our beta users.
+                    </div>
+                </div>
+                
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                    <div onclick="this.nextElementSibling.classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
+                        <span class="font-medium">What video formats do you support?</span>
+                        <i class="fa-solid fa-chevron-down text-zinc-400"></i>
+                    </div>
+                    <div class="hidden mt-4 text-sm text-zinc-400">
+                        MP4, MOV, and WEBM up to 3 hours in length. You can also paste YouTube, Vimeo, or Loom links directly.
+                    </div>
+                </div>
+                
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                    <div onclick="this.nextElementSibling.classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
+                        <span class="font-medium">Can I edit the generated captions?</span>
+                        <i class="fa-solid fa-chevron-down text-zinc-400"></i>
+                    </div>
+                    <div class="hidden mt-4 text-sm text-zinc-400">
+                        Yes. Every caption is fully editable before export. You can also save your own brand voice templates.
+                    </div>
+                </div>
+                
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                    <div onclick="this.nextElementSibling.classList.toggle('hidden')" class="flex justify-between items-center cursor-pointer">
+                        <span class="font-medium">When will RepurposeFlow launch?</span>
+                        <i class="fa-solid fa-chevron-down text-zinc-400"></i>
+                    </div>
+                    <div class="hidden mt-4 text-sm text-zinc-400">
+                        We're currently onboarding the first 500 waitlist members. Public launch is planned for March 2025.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-800 py-10">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-y-4 text-sm">
+                <div class="flex items-center gap-x-2">
+                    <div class="w-6 h-6 bg-indigo-600 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-sync text-white text-xs"></i>
+                    </div>
+                    <span class="font-semibold">RepurposeFlow</span>
+                </div>
+                <div class="text-zinc-500 text-xs">
+                    © 2025 RepurposeFlow. Built for creators.
+                </div>
+                <div class="flex items-center gap-x-5 text-xs text-zinc-400">
+                    <a href="#" class="hover:text-zinc-300">Twitter</a>
+                    <a href="#" class="hover:text-zinc-300">Product Hunt</a>
+                    <a href="#" class="hover:text-zinc-300">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function submitWaitlist(e) {
+            e.preventDefault();
+            const form = document.getElementById('waitlist-form');
+            const email = document.getElementById('email').value;
+            
+            form.innerHTML = `
+                <div class="flex items-center justify-center gap-3 bg-emerald-900/30 border border-emerald-800 text-emerald-400 px-6 py-3.5 rounded-3xl text-sm">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Thanks! We'll email ${email} when we launch.</span>
+                </div>
+            `;
+        }
+        
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#6366f1');
+        }
+        
+        window.onload = function() {
+            initializeTailwind();
+        }
+    </script>
+</body>
+</html>
