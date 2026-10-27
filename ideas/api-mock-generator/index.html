@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MockAPI Studio • Realistic API Mocks for Frontend Teams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(90deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-header {
+            font-size: 2.5rem;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 font-sans">
+    <!-- Navbar -->
+    <nav class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-lg sticky top-0 z-50">
+        <div class="max-w-screen-xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-plug text-white text-xl"></i>
+                </div>
+                <div>
+                    <span class="font-semibold text-2xl tracking-tight">MockAPI Studio</span>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-x-8 text-sm">
+                <a href="#features" class="hover:text-white transition-colors">Features</a>
+                <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+                <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+            </div>
+            <div>
+                <a href="#waitlist" class="px-5 py-2.5 text-sm font-medium bg-white text-zinc-950 rounded-2xl hover:bg-zinc-100 transition-colors">
+                    Join waitlist
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="max-w-screen-xl mx-auto px-6 pt-20 pb-16">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-zinc-900 border border-zinc-800 mb-6">
+                <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span class="text-sm font-medium">Now in private beta</span>
+            </div>
+            
+            <h1 class="text-6xl font-semibold tracking-tighter leading-none mb-6">
+                Ship frontend features<br>
+                <span class="gradient-text">without waiting</span> on backend.
+            </h1>
+            
+            <p class="text-xl text-zinc-400 max-w-lg mx-auto mb-10">
+                MockAPI Studio lets frontend developers instantly generate realistic, hosted API mocks from OpenAPI specs.
+            </p>
+            
+            <div id="waitlist" class="max-w-md mx-auto">
+                <form id="waitlist-form" class="flex gap-x-3" onsubmit="submitWaitlist(event)">
+                    <input type="email" id="email" required placeholder="your@company.com" 
+                           class="flex-1 bg-zinc-900 border border-zinc-800 focus:border-indigo-500 transition-colors px-5 py-3.5 rounded-2xl text-sm outline-none">
+                    <button type="submit" 
+                            class="bg-indigo-600 hover:bg-indigo-500 transition-colors px-8 font-semibold rounded-2xl text-sm whitespace-nowrap">
+                        Join waitlist
+                    </button>
+                </form>
+                <p class="text-xs text-zinc-500 mt-3">No spam. Early access within 48 hours.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem vs Solution -->
+    <section class="max-w-screen-xl mx-auto px-6 py-16 border-t border-zinc-800">
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Problem -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="uppercase tracking-[2px] text-xs font-semibold text-red-400 mb-4">THE OLD WAY</div>
+                <h3 class="text-3xl font-semibold tracking-tight mb-6">The backend is always late</h3>
+                <ul class="space-y-4 text-zinc-400">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times text-red-400 mt-1"></i> Manually writing fake JSON responses for every endpoint</li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times text-red-400 mt-1"></i> Spending hours crafting realistic data that matches the spec</li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times text-red-400 mt-1"></i> No way to test error states or edge cases quickly</li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times text-red-400 mt-1"></i> Mocks live in local files and never match production</li>
+                </ul>
+            </div>
+            
+            <!-- Solution -->
+            <div class="bg-zinc-900 border border-emerald-900/60 rounded-3xl p-8">
+                <div class="uppercase tracking-[2px] text-xs font-semibold text-emerald-400 mb-4">WITH MOCKAPI STUDIO</div>
+                <h3 class="text-3xl font-semibold tracking-tight mb-6">Realistic mocks in under a minute</h3>
+                <ul class="space-y-4 text-zinc-300">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Import OpenAPI spec and get working mocks instantly</li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Rule-based data generation that feels real</li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Hosted endpoints you can share with the team</li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Full request logging and version history</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="max-w-screen-xl mx-auto px-6 py-16">
+        <div class="text-center mb-12">
+            <span class="text-indigo-400 text-sm font-semibold tracking-widest">BUILT FOR FRONTEND ENGINEERS</span>
+            <h2 class="section-header mt-3">Everything you need to mock APIs fast</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-950 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-file-import text-indigo-400 text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">OpenAPI spec import</h4>
+                <p class="text-zinc-400">Drop in your OpenAPI or Swagger file. MockAPI Studio parses every endpoint, parameter, and schema automatically.</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-950 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-magic text-indigo-400 text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Rule-based fake data</h4>
+                <p class="text-zinc-400">Define custom rules and patterns so generated data matches real user scenarios, including names, IDs, dates, and nested objects.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-950 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-globe text-indigo-400 text-2xl"></i>
+                </div>
+                <h4 class="font-semibold text-xl mb-3">Instant hosted endpoints</h4>
+                <p class="text-zinc-400">Get production-ready mock URLs in seconds. Share them with designers, PMs, or run automated tests against them.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="max-w-screen-xl mx-auto px-6 py-16 border-t border-zinc-800">
+        <div class="text-center mb-12">
+            <h2 class="section-header">Simple pricing for teams of any size</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <!-- Free -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div>
+                    <span class="font-semibold">Starter</span>
+                    <div class="mt-4 flex items-baseline"><span class="text-5xl font-semibold">$0</span></div>
+                </div>
+                <div class="mt-8">
+                    <ul class="space-y-3 text-sm text-zinc-400">
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> 3 mock projects</li>
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> OpenAPI import</li>
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> 1,000 requests/month</li>
+                    </ul>
+                </div>
+                <button class="mt-8 w-full py-3 text-sm font-semibold border border-zinc-700 rounded-2xl hover:bg-zinc-800 transition-colors">Start free</button>
+            </div>
+            
+            <!-- Pro -->
+            <div class="bg-zinc-900 border border-indigo-500/70 rounded-3xl p-8 relative">
+                <div class="absolute -top-3 right-6 bg-indigo-600 text-xs px-3 py-1 rounded-3xl font-medium">Most popular</div>
+                <div>
+                    <span class="font-semibold">Pro</span>
+                    <div class="mt-4 flex items-baseline"><span class="text-5xl font-semibold">$19</span><span class="text-zinc-400 ml-1">/mo</span></div>
+                </div>
+                <div class="mt-8">
+                    <ul class="space-y-3 text-sm text-zinc-300">
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> Unlimited projects</li>
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> Rule-based data generation</li>
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> Request logging & replay</li>
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> 50,000 requests/month</li>
+                    </ul>
+                </div>
+                <button class="mt-8 w-full py-3 text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 rounded-2xl transition-colors">Start 14-day trial</button>
+            </div>
+            
+            <!-- Team -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div>
+                    <span class="font-semibold">Team</span>
+                    <div class="mt-4 flex items-baseline"><span class="text-5xl font-semibold">$49</span><span class="text-zinc-400 ml-1">/mo</span></div>
+                </div>
+                <div class="mt-8">
+                    <ul class="space-y-3 text-sm text-zinc-400">
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> Everything in Pro</li>
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> Mock version control</li>
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> Team collaboration</li>
+                        <li class="flex gap-x-2"><i class="fa-solid fa-check text-emerald-400 mt-px"></i> Priority support</li>
+                    </ul>
+                </div>
+                <button class="mt-8 w-full py-3 text-sm font-semibold border border-zinc-700 rounded-2xl hover:bg-zinc-800 transition-colors">Talk to sales</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="max-w-screen-xl mx-auto px-6 py-16 border-t border-zinc-800">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="section-header text-center mb-12">Frequently asked questions</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                    <div class="font-medium">Can I import existing OpenAPI specs?</div>
+                    <div class="text-zinc-400 mt-2 text-sm">Yes. Paste a URL or upload your YAML/JSON spec and MockAPI Studio creates fully functional mock endpoints instantly.</div>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                    <div class="font-medium">How realistic is the generated data?</div>
+                    <div class="text-zinc-400 mt-2 text-sm">Use built-in rules or write your own JavaScript-style expressions to generate contextually accurate data for every field.</div>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                    <div class="font-medium">Do mocks stay in sync when the spec changes?</div>
+                    <div class="text-zinc-400 mt-2 text-sm">Absolutely. Update your spec and MockAPI Studio automatically versions and updates your hosted mock endpoints.</div>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                    <div class="font-medium">Can I see what requests were made to my mocks?</div>
+                    <div class="text-zinc-400 mt-2 text-sm">Every request is logged with full headers and payloads. Replay any request to debug your frontend integration.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-800 py-10">
+        <div class="max-w-screen-xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-y-4 text-sm text-zinc-500">
+            <div>© 2025 MockAPI Studio. All rights reserved.</div>
+            <div class="flex gap-x-6">
+                <a href="#" class="hover:text-zinc-300">Twitter</a>
+                <a href="#" class="hover:text-zinc-300">Docs</a>
+                <a href="#" class="hover:text-zinc-300">Status</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function submitWaitlist(e) {
+            e.preventDefault();
+            const form = document.getElementById('waitlist-form');
+            const email = document.getElementById('email').value;
+            
+            form.innerHTML = `
+                <div class="flex items-center justify-center gap-x-3 py-3 text-emerald-400">
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span class="font-medium">Thanks! We'll email you at ${email}</span>
+                </div>
+            `;
+        }
+        
+        // Tailwind script already loaded
+    </script>
+</body>
+</html>
