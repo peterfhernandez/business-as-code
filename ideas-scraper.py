@@ -19,21 +19,29 @@ import urllib.request
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-from github import Github
-
-from dotenv import load_dotenv
+from github import Github, GithubException
+from pydantic import BaseModel, Field
 
 load_dotenv()
 
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task, TaskOutput, LLM
 from crewai.tools import tool
 
 # Set up xAI Grok LLM
 grok_llm = LLM(
     model=os.getenv("MODEL"),
     base_url=os.getenv("XAI_API_BASE"),
-    api_key=os.getenv("XAI_API_KEY")
+    api_key=os.getenv("XAI_API_KEY"),
+    # A full Tailwind landing page runs 15-30 KB; leave headroom so pages are not cut off mid-file.
+    max_tokens=int(os.getenv("LLM_MAX_TOKENS", "16000"))
 )
+
+# Resolve output paths against this file so the script works from any working directory.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IDEAS_DIR = os.path.join(BASE_DIR, "ideas")
+NUM_IDEAS = 10
+MIN_PAGE_BYTES = 1500
+PAGE_GUARDRAIL_RETRIES = 3
 
 # ---------------------------------------------------------------------------
 # 1. ENHANCED SCRAPERS WITH PAIN-POINT FILTERING
@@ -114,71 +122,163 @@ def scrape_product_hunt_quality() -> str:
         return f"Error scraping Product Hunt: {str(e)}"
 
 # ---------------------------------------------------------------------------
-# 2. SAVE TOOL WITH MANDATORY QUALITY CHECKS
+# 2. VALIDATION & SAVE (plain Python - the save no longer depends on an agent choosing to call a tool)
 # ---------------------------------------------------------------------------
 
-@tool("Save and Validate Landing Page")
-def save_and_validate_page(folder_name: str, html_content: str) -> str:
-    """
-    Saves an index.html file locally and to GitHub ONLY if it passes content validation checks:
-    - Rejects pages under 1,500 bytes.
-    - Rejects pages containing HTML comment placeholders like <!-- ... -->.
-    - Rejects pages with empty body tags.
-    """
-    clean_slug = re.sub(r'[^a-z0-9\-]', '', folder_name.lower().replace(' ', '-'))
-    
-    # QA CHECK 1: File Size Check
-    if len(html_content.encode('utf-8')) < 1500:
-        return f"REJECTED BY QA: Generated HTML for '{clean_slug}' is too short ({len(html_content)} chars). You must provide FULL HTML code with all sections."
+# Matches one HTML comment at a time (non-greedy, may span lines) so `<!-- Hero -->` ... `-->` is never
+# treated as a single giant comment.
+HTML_COMMENT_RE = re.compile(r'<!--(.*?)-->', re.DOTALL)
 
-    # QA CHECK 2: Comment Placeholder Check
-    if re.search(r'<!--.*(?:tailored|section|rest of|todo|idea).*-->', html_content, re.IGNORECASE):
-        return f"REJECTED BY QA: Generated HTML for '{clean_slug}' contains comment placeholders! Write actual HTML content instead of comments."
+# Placeholder phrasing inside a comment. Structural labels such as `<!-- Hero Section -->` or
+# `<!-- Features -->` are normal markup and must NOT be rejected; only stand-ins for missing content are.
+PLACEHOLDER_RE = re.compile(
+    r'(?:rest of|todo|tailored|placeholder|insert|same as above|repeat(?:ed)? for|'
+    r'(?:content|code|markup|copy|html|sections?|cards?|items?|tiers?)\s+(?:goes\s+|go\s+)?here|'
+    r'add (?:more|your|the|remaining)|\.\.\.|…)',
+    re.IGNORECASE,
+)
 
-    # QA CHECK 3: Empty Body Check
-    if "<body></body>" in html_content.replace(" ", ""):
-        return f"REJECTED BY QA: Generated HTML for '{clean_slug}' has an empty body tag!"
 
+def sanitize_slug(folder_name: str) -> str:
+    """Turns any folder name into a clean, lowercase URL slug."""
+    slug = folder_name.lower().strip().replace(' ', '-').replace('_', '-')
+    slug = re.sub(r'[^a-z0-9\-]', '', slug)
+    return re.sub(r'-{2,}', '-', slug).strip('-')
+
+
+def extract_html(raw: str) -> str:
+    """Pulls the HTML document out of an LLM answer (drops markdown fences and any chatter around it)."""
+    text = raw.strip()
+    fenced = re.search(r'```(?:html)?\s*(.*?)```', text, re.DOTALL | re.IGNORECASE)
+    if fenced and '<html' in fenced.group(1).lower():
+        text = fenced.group(1).strip()
+    start = re.search(r'<!DOCTYPE html|<html', text, re.IGNORECASE)
+    if start:
+        text = text[start.start():]
+    end = text.lower().rfind('</html>')
+    if end != -1:
+        text = text[:end + len('</html>')]
+    return text
+
+
+def validate_html(html_content: str) -> list[str]:
+    """Returns a list of QA problems with the page. An empty list means the page passed."""
+    problems = []
+    size = len(html_content.encode('utf-8'))
+    lowered = html_content.lower()
+
+    if size < MIN_PAGE_BYTES:
+        problems.append(f"Page is too short ({size} bytes, minimum {MIN_PAGE_BYTES}). Provide FULL HTML for every section.")
+    if not lowered.lstrip().startswith(('<!doctype html', '<html')):
+        problems.append("Page must start with `<!DOCTYPE html>`.")
+    if '</html>' not in lowered:
+        problems.append("Page is truncated: closing `</html>` tag is missing. Output the complete document.")
+    if '<head' not in lowered:
+        problems.append("Page is missing a `<head>` section.")
+    if 'cdn.tailwindcss.com' not in lowered:
+        problems.append("Page must load Tailwind CSS from `https://cdn.tailwindcss.com`.")
+    if re.search(r'<body[^>]*>\s*</body>', lowered):
+        problems.append("Page has an empty `<body>` tag.")
+    if '<form' not in lowered:
+        problems.append("Page needs an interactive waitlist `<form>`.")
+    for section in ('pricing', 'faq'):
+        if section not in lowered:
+            problems.append(f"Page is missing the {section.upper()} section.")
+
+    placeholders = [c.strip() for c in HTML_COMMENT_RE.findall(html_content) if PLACEHOLDER_RE.search(c)]
+    if placeholders:
+        shown = "; ".join(f"<!-- {c[:60]} -->" for c in placeholders[:3])
+        problems.append(f"Page contains placeholder comments instead of real content: {shown}. Replace them with actual HTML.")
+
+    return problems
+
+
+def save_landing_page(folder_name: str, html_content: str) -> str:
+    """Writes ideas/<slug>/index.html locally, then commits it to GitHub when credentials are present."""
+    clean_slug = sanitize_slug(folder_name)
+    if not clean_slug:
+        return f"FAILED: folder name '{folder_name}' does not produce a usable slug."
+
+    local_dir = os.path.join(IDEAS_DIR, clean_slug)
+    local_file_path = os.path.join(local_dir, "index.html")
     try:
-        # 1. Local Save
-        local_dir = os.path.join("ideas", clean_slug)
         os.makedirs(local_dir, exist_ok=True)
-        local_file_path = os.path.join(local_dir, "index.html")
-        
         with open(local_file_path, "w", encoding="utf-8") as f:
             f.write(html_content)
+    except OSError as e:
+        return f"FAILED: could not write {local_file_path}: {e}"
 
-        # 2. GitHub Push
-        github_token = os.getenv("GITHUB_TOKEN")
-        github_repo_name = os.getenv("GITHUB_REPO")
-        
-        if not github_token or not github_repo_name:
-            return f"PASSED QA & Saved locally to `{local_file_path}` (GitHub sync skipped: missing credentials)."
+    github_token = os.getenv("GITHUB_TOKEN")
+    github_repo_name = os.getenv("GITHUB_REPO")
+    if not github_token or not github_repo_name:
+        return f"Saved locally to {local_file_path} (GitHub sync skipped: GITHUB_TOKEN or GITHUB_REPO not set)."
 
-        gh = Github(github_token)
-        repo = gh.get_repo(github_repo_name)
-        repo_file_path = f"ideas/{clean_slug}/index.html"
-        commit_message = f"Add full high-converting landing page for: {clean_slug}"
-
+    repo_file_path = f"ideas/{clean_slug}/index.html"
+    commit_message = f"Add landing page for: {clean_slug}"
+    try:
+        repo = Github(github_token).get_repo(github_repo_name)
         try:
             contents = repo.get_contents(repo_file_path)
             repo.update_file(contents.path, commit_message, html_content, contents.sha)
-            status_msg = "Updated existing page on GitHub."
-        except Exception:
+            status_msg = "updated existing file"
+        except GithubException as e:
+            if e.status != 404:
+                raise
             repo.create_file(repo_file_path, commit_message, html_content)
-            status_msg = "Created new page on GitHub."
-
-        return f"PASSED QA! Saved locally (`{local_file_path}`) and synced to GitHub (`{repo_file_path}`): {status_msg}"
+            status_msg = "created new file"
+        return f"Saved locally to {local_file_path} and synced to GitHub {github_repo_name}/{repo_file_path} ({status_msg})."
     except Exception as e:
-        return f"Saved locally to ideas/{folder_name}/index.html, but GitHub sync failed: {str(e)}"
+        return f"Saved locally to {local_file_path}, but GitHub sync failed: {e}"
+
+
+def landing_page_guardrail(output: TaskOutput) -> tuple[bool, str]:
+    """CrewAI task guardrail: on failure the agent is re-prompted with the problems listed here."""
+    html_content = extract_html(output.raw)
+    problems = validate_html(html_content)
+    if problems:
+        return False, "REJECTED BY QA:\n- " + "\n- ".join(problems)
+    return True, html_content
+
+
+@tool("Inspect Ideas Directory")
+def inspect_ideas_directory() -> str:
+    """Reads the local `ideas/` directory and reports every `index.html` with its size and QA result."""
+    if not os.path.isdir(IDEAS_DIR):
+        return f"No `ideas/` directory found at {IDEAS_DIR}."
+    lines = []
+    for folder in sorted(os.listdir(IDEAS_DIR)):
+        page = os.path.join(IDEAS_DIR, folder, "index.html")
+        if not os.path.isfile(page):
+            lines.append(f"- {folder}: MISSING index.html")
+            continue
+        with open(page, encoding="utf-8") as f:
+            problems = validate_html(f.read())
+        status = "PASS" if not problems else "FAIL: " + " | ".join(problems)
+        lines.append(f"- {folder}: {os.path.getsize(page)} bytes - {status}")
+    return f"{len(lines)} folder(s) in {IDEAS_DIR}:\n" + "\n".join(lines) if lines else "The `ideas/` directory is empty."
 
 # ---------------------------------------------------------------------------
-# 3. AGENTS WITH QA ENFORCEMENT
+# 3. STRUCTURED HAND-OFF BETWEEN RESEARCH AND BUILD
+# ---------------------------------------------------------------------------
+
+class IdeaBrief(BaseModel):
+    slug: str = Field(description="Lowercase, hyphenated folder name, e.g. 'invoice-reconciler'")
+    product_name: str
+    target_audience: str
+    pain_point: str = Field(description="The specific user complaint, with the source it came from")
+    key_features: list[str] = Field(description="3-5 concrete features")
+
+
+class IdeaList(BaseModel):
+    ideas: list[IdeaBrief]
+
+# ---------------------------------------------------------------------------
+# 4. AGENTS
 # ---------------------------------------------------------------------------
 
 idea_hunter = Agent(
     role="Principal Market Researcher",
-    goal="Scrape community sources and filter out noise to generate 10 deeply validated, high-demand SaaS ideas.",
+    goal=f"Scrape community sources and filter out noise to generate {NUM_IDEAS} deeply validated, high-demand SaaS ideas.",
     backstory="You are a seasoned startup founder who finds explicit user pain points and feature requests online.",
     tools=[scrape_reddit_quality, scrape_hacker_news_quality, scrape_product_hunt_quality],
     llm=grok_llm,
@@ -187,71 +287,118 @@ idea_hunter = Agent(
 
 developer_agent = Agent(
     role="Lead Frontend Engineer",
-    goal="Write complete, non-truncated HTML index files for each idea and save them using `Save and Validate Landing Page`.",
+    goal="Write one complete, non-truncated, standalone HTML landing page for the product brief you are given.",
     backstory=(
         "You are a full-stack engineer who builds complete landing pages using Tailwind CSS CDN. "
         "You write full HTML code for every section and NEVER use HTML comment placeholders."
     ),
-    tools=[save_and_validate_page],
     llm=grok_llm,
     verbose=True
 )
 
 qa_auditor = Agent(
     role="Quality Assurance Inspector",
-    goal="Verify that all 10 files in the `ideas/` directory contain full HTML markup and zero placeholder comments.",
-    backstory="You verify that files rendered in `ideas/` have real HTML content and valid page structures.",
+    goal="Verify from the real files on disk that every folder in `ideas/` contains a full, valid landing page.",
+    backstory="You never assume a file exists - you inspect the `ideas/` directory with your tool and report exactly what is there.",
+    tools=[inspect_ideas_directory],
     llm=grok_llm,
     verbose=True
 )
 
 # ---------------------------------------------------------------------------
-# 4. TASKS
+# 5. TASKS
 # ---------------------------------------------------------------------------
 
-task_find_10_quality_ideas = Task(
+task_find_quality_ideas = Task(
     description=(
         "1. Execute all 3 scraper tools.\n"
-        "2. Extract EXACTLY 10 distinct, specific SaaS/software concepts with real community demand.\n"
-        "3. Provide a list of 10 items, each containing: `slug`, `product_name`, `target_audience`, `pain_point`, and `key_features`."
+        f"2. Extract EXACTLY {NUM_IDEAS} distinct, specific SaaS/software concepts with real community demand.\n"
+        "3. For each idea provide: `slug`, `product_name`, `target_audience`, `pain_point`, and `key_features`."
     ),
-    expected_output="A list of 10 validated product briefs with folder slugs.",
+    expected_output=f"{NUM_IDEAS} validated product briefs.",
+    output_pydantic=IdeaList,
     agent=idea_hunter
 )
 
-task_build_10_quality_pages = Task(
-    description=(
-        "FOR EACH OF THE 10 BUSINESS IDEAS:\n"
-        "1. Construct a COMPLETE standalone `index.html` file with full Tailwind CSS markup.\n"
-        "2. Required sections: Hero with Waitlist Input, Problem vs. Solution Grid, 3 Feature Cards, Pricing Tiers, FAQ.\n"
-        "3. Call `Save and Validate Landing Page` with the folder slug and HTML code.\n"
-        "4. IF THE TOOL RETURNS 'REJECTED BY QA', FIX THE HTML AND CALL THE TOOL AGAIN until all 10 ideas are saved successfully."
-    ),
-    expected_output="All 10 landing pages successfully passed QA validation and saved.",
-    agent=developer_agent
-)
+
+def build_page_task(idea: IdeaBrief) -> Task:
+    features = "\n".join(f"  - {f}" for f in idea.key_features)
+    return Task(
+        description=(
+            "Build a COMPLETE standalone `index.html` landing page for this product:\n"
+            f"- slug: {idea.slug}\n"
+            f"- product_name: {idea.product_name}\n"
+            f"- target_audience: {idea.target_audience}\n"
+            f"- pain_point: {idea.pain_point}\n"
+            f"- key_features:\n{features}\n\n"
+            "Requirements:\n"
+            "1. Full HTML5 document with `<head>` and Tailwind CSS from `<script src=\"https://cdn.tailwindcss.com\"></script>`.\n"
+            "2. Sections: Hero with a waitlist `<form>`, Problem vs. Solution grid, 3 Feature cards, Pricing tiers, FAQ, footer.\n"
+            "3. Write real, product-specific copy for every section. Never use placeholder comments such as "
+            "`<!-- rest of content here -->`.\n"
+            "4. Your final answer must be ONLY the HTML document, from `<!DOCTYPE html>` to `</html>`."
+        ),
+        expected_output="A single complete HTML document starting with <!DOCTYPE html> and ending with </html>.",
+        agent=developer_agent,
+        guardrail=landing_page_guardrail,
+        guardrail_max_retries=PAGE_GUARDRAIL_RETRIES
+    )
+
 
 task_verify_ideas_dir = Task(
     description=(
-        "Inspect the `ideas/` folder on disk to confirm that 10 subdirectories exist and each `index.html` "
-        "has a file size greater than 1,500 bytes with valid HTML markup inside."
+        "Call `Inspect Ideas Directory` and report on every folder it lists. "
+        "Only report what the tool returns - do not assume any file exists."
     ),
-    expected_output="A QA status log confirming all 10 pages are non-empty and deployed.",
+    expected_output="A QA status log listing each landing page with its size and PASS/FAIL result.",
     agent=qa_auditor
 )
 
 # ---------------------------------------------------------------------------
-# 5. EXECUTE THE SWARM
+# 6. EXECUTE THE SWARM
 # ---------------------------------------------------------------------------
 
-swarm = Crew(
-    agents=[idea_hunter, developer_agent, qa_auditor],
-    tasks=[task_find_10_quality_ideas, task_build_10_quality_pages, task_verify_ideas_dir],
-    process=Process.sequential,
-    verbose=True
-)
+def run_research() -> list[IdeaBrief]:
+    crew = Crew(agents=[idea_hunter], tasks=[task_find_quality_ideas], process=Process.sequential, verbose=True)
+    result = crew.kickoff()
+    if result.pydantic is None:
+        raise RuntimeError(f"Idea research did not return structured briefs. Raw output:\n{result.raw}")
+    return result.pydantic.ideas[:NUM_IDEAS]
+
+
+def build_pages(ideas: list[IdeaBrief]) -> list[str]:
+    """Builds and saves one page per idea. One failed page never stops the others."""
+    report = []
+    for i, idea in enumerate(ideas, start=1):
+        idea.slug = sanitize_slug(idea.slug)
+        print(f"\n=== [{i}/{len(ideas)}] Building landing page: {idea.slug} ===")
+        try:
+            crew = Crew(agents=[developer_agent], tasks=[build_page_task(idea)], verbose=True)
+            html_content = extract_html(crew.kickoff().raw)
+            problems = validate_html(html_content)
+            if problems:
+                status = "REJECTED BY QA: " + " | ".join(problems)
+            else:
+                status = save_landing_page(idea.slug, html_content)
+        except Exception as e:
+            status = f"FAILED: {e}"
+        print(f"[{idea.slug}] {status}")
+        report.append(f"[{idea.slug}] {status}")
+    return report
+
+
+def run_qa() -> str:
+    crew = Crew(agents=[qa_auditor], tasks=[task_verify_ideas_dir], process=Process.sequential, verbose=True)
+    return crew.kickoff().raw
+
 
 if __name__ == "__main__":
-    result = swarm.kickoff()
-    print("\n\n================ QUALITY CONTROL SWARM OUTPUT ================\n")
-    print(result)
+    ideas = run_research()
+    print(f"\nResearch produced {len(ideas)} idea(s): {', '.join(i.slug for i in ideas)}")
+    build_report = build_pages(ideas)
+    qa_report = run_qa()
+
+    print("\n\n================ BUILD REPORT ================\n")
+    print("\n".join(build_report))
+    print("\n================ QA AUDIT ================\n")
+    print(qa_report)
