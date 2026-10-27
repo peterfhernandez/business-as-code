@@ -52,7 +52,7 @@ def create_github_pull_request(branch_name: str, file_path: str, file_content: s
 
     try:
         gh = Github(GITHUB_TOKEN)
-        repo = gh.get_repo(GITHUB_REPO_NAME)
+        repo = gh.get_repo(GITHUB_REPO)
         default_branch = repo.default_branch
         
         # 1. Create a new branch off main
