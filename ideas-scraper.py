@@ -14,9 +14,13 @@ sys.modules["mcp.types"] = mcp_types_mock
 
 import os
 import json
+import re
 import urllib.request
 import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from github import Github
+
 from dotenv import load_dotenv
 
 load_dotenv()

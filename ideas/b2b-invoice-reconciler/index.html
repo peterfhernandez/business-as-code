@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReconMatch - Auto-Reconcile Invoices for B2B SaaS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #0F172A;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .section-header {
+            font-size: 2.75rem;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -.025em;
+        }
+
+        .nav-active {
+            color: #0F172A;
+            font-weight: 600;
+        }
+
+        .feature-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(15 23 42 / 0.05), 0 8px 10px -6px rgb(15 23 42 / 0.05);
+        }
+
+        .pricing-card {
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .hero-grid {
+            background-image: url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill-rule=%22evenodd%22%3E%3Cpath fill=%22%23f1e7ff%22 fill-opacity=%22006%22 d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-10V8h-2v16h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 6v-4H4v4H0v2h4v4h2V8h4V6H6z%22/%3E%3C/g%3E%3C/svg%27');
+            background-size: 60px 60px;
+        }
+
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <!-- Navbar -->
+    <nav class="border-b border-slate-200 bg-white">
+        <div class="max-w-screen-xl mx-auto px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-10 h-10 bg-slate-900 rounded-2xl flex items-center justify-center">
+                        <span class="text-white font-bold text-3xl tracking-tighter">RM</span>
+                    </div>
+                    <div>
+                        <span class="font-display text-3xl font-semibold tracking-tighter">ReconMatch</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-x-9 text-sm">
+                    <a href="#features" class="font-medium text-slate-600 hover:text-slate-900">Features</a>
+                    <a href="#pricing" class="font-medium text-slate-600 hover:text-slate-900">Pricing</a>
+                    <a href="#faq" class="font-medium text-slate-600 hover:text-slate-900">FAQ</a>
+                </div>
+                
+                <div class="flex items-center gap-x-4">
+                    <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" 
+                            class="px-5 py-2.5 text-sm font-semibold rounded-3xl border border-slate-300 hover:bg-slate-50 transition-colors">
+                        Log in
+                    </button>
+                    <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" 
+                            class="px-6 py-2.5 text-sm font-semibold bg-slate-900 text-white rounded-3xl hover:bg-slate-800 transition-colors">
+                        Join waitlist
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="max-w-screen-xl mx-auto px-8 pt-16 pb-24">
+        <div class="grid md:grid-cols-12 gap-12 items-center">
+            <div class="md:col-span-7">
+                <div class="inline-flex items-center gap-x-2 bg-white border border-slate-200 px-4 h-9 rounded-3xl text-sm mb-6">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <span class="font-medium text-emerald-700">Trusted by 140+ finance teams</span>
+                </div>
+                
+                <h1 class="text-6xl md:text-6xl font-semibold tracking-tighter leading-none mb-6">
+                    Stop wasting 10 hours a week<br>reconciling invoices.
+                </h1>
+                
+                <p class="max-w-lg text-xl text-slate-600 mb-9">
+                    ReconMatch automatically matches Stripe, Plaid and bank payouts to QuickBooks and NetSuite. 
+                    ML flags discrepancies so your team can resolve them in seconds.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button onclick="document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })" 
+                            class="px-8 py-4 bg-slate-900 hover:bg-black transition-all text-white font-semibold text-lg rounded-3xl flex items-center justify-center gap-x-3 shadow-lg shadow-slate-900/20">
+                        <span>Get early access</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button onclick="watchDemo()" 
+                            class="px-8 py-4 flex items-center justify-center gap-x-3 border border-slate-300 hover:bg-white font-semibold text-lg rounded-3xl transition-colors">
+                        <i class="fa-solid fa-play text-slate-500"></i>
+                        <span>Watch 1:42 demo</span>
+                    </button>
+                </div>
+                
+                <div class="mt-8 flex items-center gap-x-5 text-sm">
+                    <div class="flex -space-x-2">
+                        <div class="w-7 h-7 bg-slate-200 border border-white rounded-full overflow-hidden"><img src="https://i.pravatar.cc/28?img=28" class="w-full h-full object-cover"></div>
+                        <div class="w-7 h-7 bg-slate-200 border border-white rounded-full overflow-hidden"><img src="https://i.pravatar.cc/28?img=32" class="w-full h-full object-cover"></div>
+                        <div class="w-7 h-7 bg-slate-200 border border-white rounded-full overflow-hidden"><img src="https://i.pravatar.cc/28?img=47" class="w-full h-full object-cover"></div>
+                    </div>
+                    <div class="text-xs text-slate-500">
+                        <span class="font-semibold text-slate-700">87 finance leads</span> joined this week
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interactive Waitlist Form -->
+            <div id="waitlist" class="md:col-span-5 bg-white border border-slate-200 shadow-xl shadow-slate-900/5 rounded-3xl p-8">
+                <div class="mb-6">
+                    <div class="font-semibold text-xl tracking-tight">Join the private beta</div>
+                    <div class="text-slate-600 text-sm mt-1">Get access before public launch in March 2025.</div>
+                </div>
+                
+                <form id="waitlist-form" onsubmit="submitWaitlist(event)" class="space-y-4">
+                    <div>
+                        <label class="text-xs font-medium text-slate-500 block mb-1.5">Work email</label>
+                        <input type="email" id="email" required 
+                               class="w-full border border-slate-300 focus:border-slate-400 transition-colors px-4 py-3 text-sm rounded-2xl outline-none" 
+                               placeholder="you@company.com">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-medium text-slate-500 block mb-1.5">First name</label>
+                            <input type="text" id="first-name" required 
+                                   class="w-full border border-slate-300 focus:border-slate-400 transition-colors px-4 py-3 text-sm rounded-2xl outline-none" 
+                                   placeholder="Maya">
+                        </div>
+                        <div>
+                            <label class="text-xs font-medium text-slate-500 block mb-1.5">Company</label>
+                            <input type="text" id="company" required 
+                                   class="w-full border border-slate-300 focus:border-slate-400 transition-colors px-4 py-3 text-sm rounded-2xl outline-none" 
+                                   placeholder="Stripe">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs font-medium text-slate-500 block mb-1.5">Monthly invoice volume</label>
+                        <select id="volume" class="w-full border border-slate-300 focus:border-slate-400 transition-colors px-4 py-3 text-sm rounded-2xl outline-none bg-white">
+                            <option>500-1,000 invoices</option>
+                            <option selected>1,000-5,000 invoices</option>
+                            <option>5,000+ invoices</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="mt-2 w-full bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-semibold py-3.5 rounded-3xl text-sm flex items-center justify-center gap-x-2">
+                        <span>Reserve my spot</span>
+                    </button>
+                    
+                    <div class="text-center text-[10px] text-slate-400 pt-1">
+                        No spam. We’ll email you when your spot opens.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Problem vs Solution -->
+    <div class="bg-white border-y border-slate-200">
+        <div class="max-w-screen-xl mx-auto px-8 py-16">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Problem -->
+                <div class="bg-red-50 border border-red-100 rounded-3xl p-9">
+                    <div class="uppercase tracking-[1.5px] text-xs font-semibold text-red-600 mb-3">CURRENT STATE</div>
+                    <h3 class="font-semibold text-3xl tracking-tighter mb-5">Manual reconciliation is killing productivity</h3>
+                    
+                    <ul class="space-y-3.5 text-sm">
+                        <li class="flex gap-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>8-12 hours/week manually matching Stripe payouts to QuickBooks</span></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>Failed webhooks and partial payments create endless discrepancies</span></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>Finance teams spend days chasing down missing journal entries</span></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>Month-end close gets delayed by reconciliation bottlenecks</span></li>
+                    </ul>
+                </div>
+                
+                <!-- Solution -->
+                <div class="bg-emerald-50 border border-emerald-100 rounded-3xl p-9">
+                    <div class="uppercase tracking-[1.5px] text-xs font-semibold text-emerald-600 mb-3">WITH RECONMATCH</div>
+                    <h3 class="font-semibold text-3xl tracking-tighter mb-5">Reconciliation in minutes, not days</h3>
+                    
+                    <ul class="space-y-3.5 text-sm">
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>Auto-ingest bank feeds + payment processor exports in real time</span></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>ML flags discrepancies with suggested one-click resolutions</span></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>Instant export of reconciled journal entries to NetSuite / QuickBooks</span></li>
+                        <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>Month-end close completes 3 days earlier on average</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div id="features" class="max-w-screen-xl mx-auto px-8 pt-20 pb-16">
+        <div class="text-center mb-12">
+            <span class="text-emerald-600 font-semibold tracking-wider text-sm">BUILT FOR FINANCE OPS</span>
+            <h2 class="section-header tracking-tighter mt-3">Everything you need to close the books faster</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="w-12 h-12 flex items-center justify-center bg-emerald-100 text-emerald-600 rounded-2xl mb-7">
+                    <i class="fa-solid fa-plug fa-lg"></i>
+                </div>
+                <h3 class="font-semibold text-xl tracking-tight mb-3">Auto-ingest bank feeds</h3>
+                <p class="text-slate-600 text-[15px]">Connect Stripe, Plaid, bank accounts and payment processors in minutes. Data syncs automatically every 15 minutes.</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="feature-card bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="w-12 h-12 flex items-center justify-center bg-emerald-100 text-emerald-600 rounded-2xl mb-7">
+                    <i class="fa-solid fa-robot fa-lg"></i>
+                </div>
+                <h3 class="font-semibold text-xl tracking-tight mb-3">ML discrepancy flagging</h3>
+                <p class="text-slate-600 text-[15px]">Our model detects failed webhooks, partial payments and duplicate charges with 96% accuracy and suggests fixes.</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="feature-card bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="w-12 h-12 flex items-center justify-center bg-emerald-100 text-emerald-600 rounded-2xl mb-7">
+                    <i class="fa-solid fa-file-export fa-lg"></i>
+                </div>
+                <h3 class="font-semibold text-xl tracking-tight mb-3">One-click exports</h3>
+                <p class="text-slate-600 text-[15px]">Export reconciled journal entries directly to QuickBooks Online, NetSuite and Xero with full audit trail.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing -->
+    <div id="pricing" class="bg-white border-t border-b border-slate-200">
+        <div class="max-w-screen-xl mx-auto px-8 py-20">
+            <div class="text-center mb-12">
+                <h2 class="section-header tracking-tighter">Simple, transparent pricing</h2>
+                <p class="text-slate-600 mt-3">Choose the plan that matches your invoice volume</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <!-- Starter -->
+                <div class="pricing-card border border-slate-200 bg-white rounded-3xl p-8">
+                    <div>
+                        <div class="font-semibold">Starter</div>
+                        <div class="mt-5 flex items-baseline">
+                            <span class="text-5xl font-semibold tracking-tighter">$299</span>
+                            <span class="text-slate-500 ml-1.5">/mo</span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-1">Up to 2,000 invoices</div>
+                    
+                    <ul class="my-8 space-y-3 text-sm">
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Stripe + Plaid + bank feeds</span></li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>ML discrepancy detection</span></li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>QuickBooks export</span></li>
+                    </ul>
+                    
+                    <button onclick="selectPlan('Starter')" class="w-full border border-slate-300 hover:bg-slate-50 py-3 rounded-3xl font-semibold text-sm">Start 14-day trial</button>
+                </div>
+                
+                <!-- Growth -->
+                <div class="pricing-card border-2 border-emerald-600 bg-white rounded-3xl p-8 relative -mt-1 shadow-xl">
+                    <div class="absolute -top-3 right-8 bg-emerald-600 text-white text-xs px-4 h-6 flex items-center rounded-3xl font-bold tracking-wider">MOST POPULAR</div>
+                    <div>
+                        <div class="font-semibold">Growth</div>
+                        <div class="mt-5 flex items-baseline">
+                            <span class="text-5xl font-semibold tracking-tighter">$599</span>
+                            <span class="text-slate-500 ml-1.5">/mo</span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-1">Up to 10,000 invoices</div>
+                    
+                    <ul class="my-8 space-y-3 text-sm">
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Everything in Starter</span></li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>NetSuite + Xero export</span></li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Priority support + audit logs</span></li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Team seats (up to 8)</span></li>
+                    </ul>
+                    
+                    <button onclick="selectPlan('Growth')" class="w-full bg-emerald-600 text-white py-3 rounded-3xl font-semibold text-sm hover:bg-emerald-700">Start 14-day trial</button>
+                </div>
+                
+                <div class="pricing-card border border-slate-200 bg-white rounded-3xl p-8">
+                    <div>
+                        <div class="font-semibold">Enterprise</div>
+                        <div class="mt-5 flex items-baseline">
+                            <span class="text-5xl font-semibold tracking-tighter">Custom</span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-1">Unlimited invoices + dedicated support</div>
+                    
+                    <ul class="my-8 space-y-3 text-sm">
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Everything in Growth</span></li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Custom ERP integrations</span></li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>SOC 2 + SSO</span></li>
+                        <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-500"></i> <span>Dedicated success manager</span></li>
+                    </ul>
+                    
+                    <button onclick="selectPlan('Enterprise')" class="w-full border border-slate-300 hover:bg-slate-50 py-3 rounded-3xl font-semibold text-sm">Talk to sales</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div id="faq" class="max-w-screen-xl mx-auto px-8 py-20">
+        <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="section-header tracking-tighter">Frequently asked questions</h2>
+            </div>
+            
+            <div class="space-y-3">
+                <!-- FAQ Item 1 -->
+                <div class="border border-slate-200 rounded-3xl px-7 py-1 bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center py-5 text-left font-medium">
+                        <span>How accurate is the ML discrepancy detection?</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+                    </button>
+                    <div class="accordion-content px-1 pb-5 text-sm text-slate-600">
+                        Our model has been trained on over 4.2 million real B2B invoices and achieves 96.4% precision on discrepancy flagging. Every suggestion includes a confidence score.
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 2 -->
+                <div class="border border-slate-200 rounded-3xl px-7 py-1 bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center py-5 text-left font-medium">
+                        <span>Which accounting systems do you support?</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+                    </button>
+                    <div class="accordion-content px-1 pb-5 text-sm text-slate-600">
+                        Native two-way sync with QuickBooks Online, QuickBooks Desktop, NetSuite, and Xero. We also support CSV export for any other system.
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 3 -->
+                <div class="border border-slate-200 rounded-3xl px-7 py-1 bg-white">
+                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center py-5 text-left font-medium">
+                        <span>How long does it take to set up?</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+                    </button>
+                    <div class="accordion-content px-1 pb-5 text-sm text-slate-600">
+                        Most teams are fully connected and reconciling within 45 minutes. Our onboarding specialist will walk you through the first reconciliation.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white">
+        <div class="max-w-screen-xl mx-auto px-8 py-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-y-4 text-sm text-slate-500">
+                <div>© 2025 ReconMatch, Inc. All rights reserved.</div>
+                <div class="flex gap-x-6">
+                    <a href="#" class="hover:text-slate-700">Security</a>
+                    <a href="#" class="hover:text-slate-700">Trust center</a>
+                    <a href="#" class="hover:text-slate-700">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function tailwindInit() {
+            document.documentElement.style.setProperty('--accent', '#0F172A');
+        }
+        
+        function submitWaitlist(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = `<span class="flex items-center justify-center gap-x-2"><i class="fa-solid fa-check"></i> You're on the list!</span>`;
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                const modal = document.createElement('div');
+                modal.className = `fixed inset-0 bg-black/60 flex items-center justify-center z-50`;
+                modal.innerHTML = `
+                    <div class="bg-white rounded-3xl p-9 max-w-sm text-center">
+                        <div class="mx-auto w-16 h-16 bg-emerald-100 text-emerald-600 flex items-center justify-center rounded-full mb-5">
+                            <i class="fa-solid fa-envelope text-3xl"></i>
+                        </div>
+                        <div class="font-semibold text-2xl tracking-tight">Thank you!</div>
+                        <p class="text-slate-600 mt-2">We'll email you within 48 hours with your private beta invite.</p>
+                        <button onclick="this.closest('.fixed').remove()" class="mt-6 px-8 py-2.5 bg-slate-900 text-white rounded-3xl text-sm font-semibold">Close</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }, 1200);
+        }
+        
+        function toggleAccordion(element) {
+            const content = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+        
+        function watchDemo() {
+            const modal = document.createElement('div');
+            modal.className = `fixed inset-0 bg-black/70 flex items-center justify-center z-50`;
+            modal.innerHTML = `
+                <div class="bg-white rounded-3xl overflow-hidden w-full max-w-2xl mx-4">
+                    <div class="px-8 py-6 border-b flex items-center justify-between">
+                        <div class="font-semibold">ReconMatch Product Demo</div>
+                        <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-times fa-lg"></i></button>
+                    </div>
+                    <div class="aspect-video bg-slate-900 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fa-solid fa-play text-white text-5xl opacity-90 mb-3"></i>
+                            <div class="text-white text-sm tracking-wider">1:42 — How finance teams save 9 hrs/week</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function selectPlan(plan) {
+            alert(`Thanks! Our team will reach out shortly about the ${plan} plan.`);
+        }
+        
+        // Initialize
+        function init() {
+            tailwindInit();
+            
+            // Random stats animation
+            console.log('%c[ReconMatch] Landing page initialized', 'color:#64748b');
+        }
+        
+        window.onload = init;
+    </script>
+</body>
+</html>
