@@ -70,5 +70,10 @@ python .\validate-ideas.py
 
 To prevent incomplete code or token limit truncations during automated generation:
 * **Minimum File Size:** The save tool enforces a minimum threshold of 1,500 bytes for `index.html`.
-* **Placeholder Rejection:** Rejects files containing placeholder HTML comments (e.g., `<!-- TODO -->` or `<!-- Full HTML here -->`).
-* **Self-Correction:** Agents receive immediate tool errors when QA criteria fail, triggering automatic retries with complete code payloads.
+* **Placeholder Rejection:** Rejects files containing placeholder HTML comments (e.g., `<!-- TODO -->` or `<!-- Full HTML here -->`). Section labels such as `<!-- Hero Section -->` are allowed.
+* **Truncation Check:** Rejects pages missing `</html>`, the Tailwind CDN, a waitlist `<form>`, pricing or FAQ.
+* **Self-Correction:** Each landing page is its own CrewAI task with a `guardrail`. When QA fails, the developer agent is re-prompted with the exact problems (up to `PAGE_GUARDRAIL_RETRIES` times).
+* **Deterministic Saves:** Pages that pass are written to `ideas/<slug>/index.html` (and committed to GitHub when `GITHUB_TOKEN` and `GITHUB_REPO` are set) by Python, not by an agent tool call. One failed page does not stop the rest.
+* **Real QA Audit:** The QA agent inspects the actual files on disk through the `Inspect Ideas Directory` tool, and the run ends with a per-idea build report.
+
+Optional: set `LLM_MAX_TOKENS` in `.env` (default `16000`) if pages are being cut off before `</html>`.

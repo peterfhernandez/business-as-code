@@ -35,7 +35,9 @@ sys.modules["mcp.types"] = mcp_types_mock
 ### B. Tool Validation Checks
 All tools writing code artifacts to disk must validate:
 1. **Payload Size:** Reject files under 1,500 bytes.
-2. **Comment Scanning:** Search for placeholder regex patterns (`<!--.*(?:tailored|section|rest of|todo).*-->`) and throw hard rejections if detected.
+2. **Comment Scanning:** Scan each HTML comment individually (`<!--(.*?)-->` with `re.DOTALL`) and hard-reject any whose text is placeholder phrasing (`rest of`, `todo`, `tailored`, `placeholder`, `insert`, `... goes here`, `add more`). Do **not** reject on bare words like `section` or `idea`: structural labels such as `<!-- Hero Section -->` are normal markup, and rejecting them blocks every generated page.
+4. **Truncation Check:** Reject pages missing `</html>`, the Tailwind CDN, a `<form>`, a pricing section or an FAQ.
+5. **Deterministic Saves:** Write files from Python after validation (e.g. a CrewAI task `guardrail`), not by relying on an agent to decide to call a save tool.
 3. **Slug Sanitation:** Always sanitize directory names into clean, lowercase URL slugs (`re.sub(r'[^a-z0-9\-]', '', slug)`).
 
 ---
