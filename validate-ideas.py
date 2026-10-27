@@ -69,35 +69,37 @@ def extract_markdown(raw: str) -> str:
 
 
 def save_validation_report(report_md: str) -> str:
-    """Writes ideas/ideas_validation_report.md locally, then commits it to GitHub when credentials are present."""
+    """Commits ideas/ideas_validation_report.md to GitHub; only if that is not possible, writes it locally instead.
+    The report is never written to both places."""
+    repo_file_path = f"ideas/{REPORT_FILENAME}"
+    github_token = os.getenv("GITHUB_TOKEN")
+    github_repo_name = os.getenv("GITHUB_REPO")
+    if not github_token or not github_repo_name:
+        fallback_reason = "GITHUB_TOKEN or GITHUB_REPO not set"
+    else:
+        try:
+            repo = Github(github_token).get_repo(github_repo_name)
+            try:
+                contents = repo.get_contents(repo_file_path)
+                repo.update_file(contents.path, "Update Market Validation Report", report_md, contents.sha)
+                status_msg = "updated existing file"
+            except GithubException as e:
+                if e.status != 404:
+                    raise
+                repo.create_file(repo_file_path, "Add Market Validation Report", report_md)
+                status_msg = "created new file"
+            return f"Report saved to GitHub {github_repo_name}/{repo_file_path} ({status_msg})."
+        except Exception as e:
+            fallback_reason = f"GitHub save failed: {e}"
+
     report_path = os.path.join(IDEAS_DIR, REPORT_FILENAME)
     try:
         os.makedirs(IDEAS_DIR, exist_ok=True)
         with open(report_path, "w", encoding="utf-8") as f:
             f.write(report_md)
     except OSError as e:
-        return f"FAILED: could not write {report_path}: {e}"
-
-    github_token = os.getenv("GITHUB_TOKEN")
-    github_repo_name = os.getenv("GITHUB_REPO")
-    if not github_token or not github_repo_name:
-        return f"Report saved locally to {report_path} (GitHub sync skipped: GITHUB_TOKEN or GITHUB_REPO not set)."
-
-    repo_file_path = f"ideas/{REPORT_FILENAME}"
-    try:
-        repo = Github(github_token).get_repo(github_repo_name)
-        try:
-            contents = repo.get_contents(repo_file_path)
-            repo.update_file(contents.path, "Update Market Validation Report", report_md, contents.sha)
-            status_msg = "updated existing file"
-        except GithubException as e:
-            if e.status != 404:
-                raise
-            repo.create_file(repo_file_path, "Add Market Validation Report", report_md)
-            status_msg = "created new file"
-        return f"Report saved locally to {report_path} and synced to GitHub {github_repo_name}/{repo_file_path} ({status_msg})."
-    except Exception as e:
-        return f"Report saved locally to {report_path}, but GitHub sync failed: {e}"
+        return f"FAILED: {fallback_reason}, and could not write {report_path}: {e}"
+    return f"Report saved locally to {report_path} ({fallback_reason})."
 
 # ---------------------------------------------------------------------------
 # 2. DEFINE AGENTS
