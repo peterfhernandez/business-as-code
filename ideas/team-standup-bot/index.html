@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -377,4 +378,385 @@
         window.onload = init;
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsyncStandup • Async standups for remote engineering teams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #6366f1;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+            font-weight: 600;
+        }
+
+        .section-header {
+            font-size: 2.25rem;
+            line-height: 1.1;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .nav-active {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .feature-card {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+                       box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+        }
+
+        .pricing-card {
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-slate-200">
+        <div class="max-w-screen-xl mx-auto">
+            <div class="px-8 py-5 flex items-center justify-between">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-sync text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-display text-3xl font-semibold tracking-tighter">AsyncStandup</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-x-8 text-sm">
+                    <a href="#features" class="text-slate-600 hover:text-slate-900 font-medium">Features</a>
+                    <a href="#pricing" class="text-slate-600 hover:text-slate-900 font-medium">Pricing</a>
+                    <a href="#faq" class="text-slate-600 hover:text-slate-900 font-medium">FAQ</a>
+                </div>
+                
+                <div class="flex items-center gap-x-3">
+                    <a href="#waitlist" 
+                       class="px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 rounded-3xl transition-colors">
+                        Log in
+                    </a>
+                    <a href="#waitlist" 
+                       class="px-5 py-2.5 text-sm font-semibold bg-slate-900 text-white rounded-3xl hover:bg-slate-800 transition-colors">
+                        Join waitlist
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="max-w-screen-xl mx-auto px-8 pt-16 pb-20">
+        <div class="max-w-3xl">
+            <div class="inline-flex items-center gap-x-2 bg-white border border-slate-200 rounded-3xl px-4 py-1.5 mb-6">
+                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="text-sm font-medium text-slate-600">Now supporting Slack &amp; Microsoft Teams</span>
+            </div>
+            
+            <h1 class="text-6xl leading-[1.05] tracking-tighter font-display font-semibold">
+                Async standups.<br>
+                Zero time zone drama.
+            </h1>
+            
+            <p class="mt-5 text-xl text-slate-600 max-w-lg">
+                AsyncStandup replaces synchronous standups with smart Slack prompts, 
+                threaded updates, and auto-generated daily digests for remote engineering teams.
+            </p>
+            
+            <div id="waitlist" class="mt-8 max-w-md">
+                <form id="waitlist-form" class="flex gap-3">
+                    <div class="flex-1">
+                        <input type="email" id="email" required 
+                               class="w-full px-5 py-3.5 bg-white border border-slate-300 focus:border-indigo-400 rounded-3xl text-sm placeholder:text-slate-400 outline-none"
+                               placeholder="you@company.com">
+                    </div>
+                    <button type="submit" 
+                            class="px-8 font-semibold bg-indigo-600 hover:bg-indigo-700 transition-colors text-white rounded-3xl text-sm whitespace-nowrap">
+                        Join waitlist
+                    </button>
+                </form>
+                <p class="text-xs text-slate-500 mt-3 ml-1">Free for the first 500 teams. No credit card required.</p>
+            </div>
+            
+            <div class="mt-8 flex items-center gap-x-8">
+                <div class="flex -space-x-2">
+                    <div class="w-8 h-8 bg-slate-300 border border-white rounded-full overflow-hidden"><img src="https://i.pravatar.cc/32?img=28" class="w-full h-full object-cover"></div>
+                    <div class="w-8 h-8 bg-slate-300 border border-white rounded-full overflow-hidden"><img src="https://i.pravatar.cc/32?img=32" class="w-full h-full object-cover"></div>
+                    <div class="w-8 h-8 bg-slate-300 border border-white rounded-full overflow-hidden"><img src="https://i.pravatar.cc/32?img=47" class="w-full h-full object-cover"></div>
+                </div>
+                <div class="text-sm text-slate-600">
+                    <span class="font-semibold text-slate-700">1,284</span> teams joined this month
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Problem vs Solution -->
+    <div class="max-w-screen-xl mx-auto px-8 pb-20">
+        <div class="grid md:grid-cols-2 gap-5">
+            <!-- Problem -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-5">
+                    <div class="px-3 py-1 bg-red-100 text-red-600 text-xs font-semibold rounded-2xl">THE PROBLEM</div>
+                </div>
+                <h3 class="font-semibold text-2xl tracking-tight">Synchronous standups are killing productivity</h3>
+                <ul class="mt-6 space-y-4 text-slate-600">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>Teams in 8+ time zones forced to meet at 9am or 11pm</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>30-minute meetings that could have been async updates</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>Context switching and lost focus for entire engineering orgs</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-times text-red-500 mt-1"></i> <span>Blockers discovered hours too late</span></li>
+                </ul>
+                <div class="mt-6 pt-6 border-t text-sm text-slate-500">
+                    Source: Multiple Hacker News remote work threads
+                </div>
+            </div>
+            
+            <!-- Solution -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-8">
+                <div class="flex items-center gap-x-3 mb-5">
+                    <div class="px-3 py-1 bg-emerald-100 text-emerald-600 text-xs font-semibold rounded-2xl">THE SOLUTION</div>
+                </div>
+                <h3 class="font-semibold text-2xl tracking-tight">AsyncStandup keeps everyone in sync without meetings</h3>
+                <ul class="mt-6 space-y-4 text-slate-600">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>Scheduled Slack prompts at each person's optimal time</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>Threaded updates that everyone can read asynchronously</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>Auto-generated daily digest delivered every morning</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-500 mt-1"></i> <span>Instant blocker and sentiment alerts to the right people</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div id="features" class="max-w-screen-xl mx-auto px-8 pb-20">
+        <div class="text-center mb-12">
+            <span class="text-indigo-600 font-semibold text-sm tracking-wider">BUILT FOR REMOTE TEAMS</span>
+            <h2 class="section-header mt-3">Everything you need for async standups</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-white border border-slate-200 rounded-3xl p-7">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-2xl mb-6">
+                    <i class="fa-solid fa-clock text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl">Scheduled Slack prompts</h3>
+                <p class="mt-3 text-slate-600">Send personalized standup questions to each engineer at the time they prefer. Works natively in both Slack and Microsoft Teams.</p>
+                <div class="mt-5 text-xs font-medium px-3 py-1 bg-slate-100 rounded-2xl inline-block">9am • 2pm • 10pm options</div>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="feature-card bg-white border border-slate-200 rounded-3xl p-7">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-2xl mb-6">
+                    <i class="fa-solid fa-comments text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl">Threaded async updates</h3>
+                <p class="mt-3 text-slate-600">Engineers reply directly in Slack threads. Everyone stays in context without leaving their workflow or cluttering the main channel.</p>
+                <div class="mt-5 flex items-center gap-x-1 text-xs">
+                    <div class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-xl text-[10px]">98% response rate</div>
+                </div>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="feature-card bg-white border border-slate-200 rounded-3xl p-7">
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-2xl mb-6">
+                    <i class="fa-solid fa-file-lines text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl">Auto-generated daily digest</h3>
+                <p class="mt-3 text-slate-600">Every morning your team receives a clean summary of yesterday's updates, blockers, and sentiment trends directly in Slack.</p>
+                <div class="mt-4 text-xs text-slate-500">Integrates with Jira &amp; Linear</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing -->
+    <div id="pricing" class="max-w-screen-xl mx-auto px-8 pb-20">
+        <div class="text-center mb-10">
+            <h2 class="section-header">Simple pricing for growing teams</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <!-- Starter -->
+            <div class="pricing-card bg-white border border-slate-200 rounded-3xl p-7">
+                <div>
+                    <div class="font-semibold">Starter</div>
+                    <div class="mt-4">
+                        <span class="text-4xl font-semibold">$0</span>
+                    </div>
+                    <div class="text-sm text-slate-500">Forever free</div>
+                </div>
+                <ul class="mt-8 space-y-3 text-sm">
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Up to 10 team members</li>
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Slack &amp; Teams prompts</li>
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Daily digest</li>
+                </ul>
+                <a href="#waitlist" class="mt-8 block w-full text-center py-3 text-sm font-semibold border border-slate-300 hover:bg-slate-50 rounded-3xl">Join waitlist</a>
+            </div>
+            
+            <!-- Pro -->
+            <div class="pricing-card bg-white border-2 border-indigo-600 rounded-3xl p-7 relative">
+                <div class="absolute -top-3 right-7 bg-indigo-600 text-white px-4 py-0.5 text-xs font-bold rounded-2xl">MOST POPULAR</div>
+                <div>
+                    <div class="font-semibold">Pro</div>
+                    <div class="mt-4">
+                        <span class="text-4xl font-semibold">$49</span>
+                        <span class="text-slate-500">/mo</span>
+                    </div>
+                    <div class="text-sm text-slate-500">Billed annually or $59 monthly</div>
+                </div>
+                <ul class="mt-8 space-y-3 text-sm">
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Unlimited team members</li>
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Jira &amp; Linear integration</li>
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Sentiment &amp; blocker detection</li>
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Custom questions &amp; reminders</li>
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Priority support</li>
+                </ul>
+                <a href="#waitlist" class="mt-8 block w-full text-center py-3 text-sm font-semibold bg-indigo-600 text-white rounded-3xl hover:bg-indigo-700">Join waitlist</a>
+            </div>
+            
+            <!-- Enterprise -->
+            <div class="pricing-card bg-white border border-slate-200 rounded-3xl p-7">
+                <div>
+                    <div class="font-semibold">Enterprise</div>
+                    <div class="mt-4">
+                        <span class="text-4xl font-semibold">Custom</span>
+                    </div>
+                    <div class="text-sm text-slate-500">For large engineering orgs</div>
+                </div>
+                <ul class="mt-8 space-y-3 text-sm">
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Everything in Pro</li>
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> SSO + SCIM provisioning</li>
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Dedicated success manager</li>
+                    <li class="flex items-center gap-x-2"><i class="fa-solid fa-check text-emerald-500"></i> Custom integrations</li>
+                </ul>
+                <a href="#waitlist" class="mt-8 block w-full text-center py-3 text-sm font-semibold border border-slate-300 hover:bg-slate-50 rounded-3xl">Talk to sales</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div id="faq" class="max-w-screen-xl mx-auto px-8 pb-20">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="section-header text-center mb-10">Frequently asked questions</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-white border border-slate-200 rounded-3xl p-6">
+                    <div class="font-semibold">How does AsyncStandup work with different time zones?</div>
+                    <p class="mt-2 text-slate-600 text-sm">You set preferred standup windows for each engineer. Prompts are delivered automatically at the right local time for every team member.</p>
+                </div>
+                
+                <div class="bg-white border border-slate-200 rounded-3xl p-6">
+                    <div class="font-semibold">Can I connect it to Jira or Linear?</div>
+                    <p class="mt-2 text-slate-600 text-sm">Yes. Pro users can link issues directly from Slack updates. Blockers automatically create or update tickets in your project management tool.</p>
+                </div>
+                
+                <div class="bg-white border border-slate-200 rounded-3xl p-6">
+                    <div class="font-semibold">What happens if someone doesn't respond?</div>
+                    <p class="mt-2 text-slate-600 text-sm">AsyncStandup sends gentle reminders and surfaces non-responders in the daily digest so managers can follow up without awkward meetings.</p>
+                </div>
+                
+                <div class="bg-white border border-slate-200 rounded-3xl p-6">
+                    <div class="font-semibold">Is my team's data private?</div>
+                    <p class="mt-2 text-slate-600 text-sm">All standup data is encrypted and stored securely. We never train models on your company's updates. Enterprise plans include data residency options.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white">
+        <div class="max-w-screen-xl mx-auto px-8 py-10">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-y-4 text-sm">
+                <div class="flex items-center gap-x-2">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-sync text-white"></i>
+                    </div>
+                    <span class="font-semibold">AsyncStandup</span>
+                </div>
+                <div class="text-slate-500">© 2025 AsyncStandup. Built for remote engineering teams.</div>
+                <div class="flex gap-x-5 text-slate-500">
+                    <a href="#" class="hover:text-slate-700">Twitter</a>
+                    <a href="#" class="hover:text-slate-700">Slack community</a>
+                    <a href="#" class="hover:text-slate-700">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#6366f1');
+        }
+        
+        // Waitlist form handler
+        function setupWaitlistForm() {
+            const form = document.getElementById('waitlist-form');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const emailInput = document.getElementById('email');
+                const originalContent = form.innerHTML;
+                
+                form.innerHTML = `
+                    <div class="flex items-center justify-center gap-x-3 w-full bg-emerald-50 border border-emerald-200 text-emerald-700 px-5 py-3.5 rounded-3xl">
+                        <i class="fa-solid fa-check"></i>
+                        <span class="font-semibold">Thanks! You're on the waitlist.</span>
+                    </div>
+                `;
+                
+                // Reset form after 4 seconds
+                setTimeout(() => {
+                    form.innerHTML = originalContent;
+                    document.getElementById('email').value = '';
+                    setupWaitlistForm(); // re-attach listener
+                }, 4000);
+            });
+        }
+        
+        // Initialize everything
+        function init() {
+            initializeTailwind();
+            setupWaitlistForm();
+            
+            // Smooth scroll for nav links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+        
+        window.onload = init;
+    </script>
+</body>
+>>>>>>> bf6efce60dfcf12f6611ae20855b1488e24ed2f8
 </html>
