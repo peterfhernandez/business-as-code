@@ -1,0 +1,21 @@
+project_id = "launch-rails"
+
+# All functions are called by browsers, email links, Stripe or a cron job,
+# none of which carry a Supabase user JWT. Each one does its own checks.
+[functions.waitlist-signup]
+verify_jwt = false
+
+[functions.waitlist-action]
+verify_jwt = false
+
+[functions.onboarding-drip]
+verify_jwt = false
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.billing-portal]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false

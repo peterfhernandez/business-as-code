@@ -1,12 +1,25 @@
+import sys
+from types import ModuleType
+
+class MagicMockType(ModuleType):
+    def __getattr__(self, name):
+        return object
+
+mcp_mock = MagicMockType("mcp")
+mcp_types_mock = MagicMockType("mcp.types")
+
+sys.modules["mcp"] = mcp_mock
+sys.modules["mcp.types"] = mcp_types_mock
+
 import os
 import subprocess
-from github import Github
+from github import Github, GithubException
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.tools import tool
 
 # Set access to Github
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "your-github-personal-access-token")
-GITHUB_REPO_NAME = os.getenv("GITHUB_REPO_NAME")  # Replace with your GitHub repo in the format "username/repo"
+GITHUB_REPO = os.getenv("GITHUB_REPO") or os.getenv("GITHUB_REPO_NAME")  # "username/repo"
 
 # Configure xAI LLM
 grok_llm = LLM(
@@ -49,6 +62,8 @@ def create_github_pull_request(branch_name: str, file_path: str, file_content: s
     """Pushes code directly to a GitHub repository branch and opens a Pull Request."""
     if not GITHUB_TOKEN or GITHUB_TOKEN == "your-github-personal-access-token":
         return "Error: Valid GITHUB_TOKEN environment variable is required."
+    if not GITHUB_REPO:
+        return "Error: GITHUB_REPO (or GITHUB_REPO_NAME) environment variable is required, in the format 'username/repo'."
 
     try:
         gh = Github(GITHUB_TOKEN)
@@ -59,8 +74,10 @@ def create_github_pull_request(branch_name: str, file_path: str, file_content: s
         main_ref = repo.get_git_ref(f"heads/{default_branch}")
         try:
             repo.create_git_ref(ref=f"refs/heads/{branch_name}", sha=main_ref.object.sha)
-        except Exception:
-            pass  # Branch already exists
+        except GithubException as e:
+            if e.status != 422:
+                raise
+            # 422: branch already exists
 
         # 2. Update or Create the File
         try:
@@ -72,7 +89,9 @@ def create_github_pull_request(branch_name: str, file_path: str, file_content: s
                 sha=existing_file.sha,
                 branch=branch_name
             )
-        except Exception:
+        except GithubException as e:
+            if e.status != 404:
+                raise
             repo.create_file(
                 path=file_path,
                 message=commit_message,
