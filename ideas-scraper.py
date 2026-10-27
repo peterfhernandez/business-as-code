@@ -153,6 +153,33 @@ def save_and_push_idea(folder_name: str, html_content: str) -> str:
     except Exception as e:
         return f"Saved locally to ideas/{folder_name}/index.html, but GitHub sync failed: {str(e)}"
 
+@tool("Batch Save 10 Landing Pages")
+def batch_save_ideas(ideas_json_str: str) -> str:
+    """
+    Accepts a JSON string array of 10 landing page objects and writes all 10 files locally and to GitHub.
+    Expected JSON schema for ideas_json_str:
+    [
+        {"folder_name": "slug-1", "html_content": "<!DOCTYPE html>..."},
+        {"folder_name": "slug-2", "html_content": "<!DOCTYPE html>..."}
+    ]
+    """
+    try:
+        ideas = json.loads(ideas_json_str)
+        if not isinstance(ideas, list):
+            return "Error: Input must be a JSON array of objects."
+        
+        results = []
+        for item in ideas:
+            folder_name = item.get("folder_name")
+            html_content = item.get("html_content")
+            if folder_name and html_content:
+                res = save_and_push_idea.func(folder_name, html_content)
+                results.append(f"[{folder_name}]: {res}")
+        
+        return "\n".join(results)
+    except Exception as e:
+        return f"Error parsing JSON or saving batch: {str(e)}"
+
 # ---------------------------------------------------------------------------
 # 2. AGENTS WITH QUALITY ASSURANCE GATEWAY
 # ---------------------------------------------------------------------------
@@ -178,7 +205,7 @@ developer_agent = Agent(
         "Every page you generate includes custom copy, hero visuals, problem breakdown, features, pricing, and FAQ. "
         "You NEVER use placeholders or incomplete HTML boilerplate."
     ),
-    tools=[save_and_push_idea],
+    tools=[save_and_push_idea, batch_save_ideas],
     llm=grok_llm,
     verbose=True
 )
@@ -226,7 +253,7 @@ task_build_10_quality_pages = Task(
         "   - **FAQ Section**: 3 accordion-style common questions answered.\n"
         "   - **Footer**: Branding and copyright.\n"
         "3. DO NOT use generic filler text or lorem ipsum. Tailor all copy directly to the specific business idea.\n"
-        "4. Call `Save Landing Page and Sync to GitHub` for EACH idea, passing its slug and HTML string.\n"
+        "4. Call `Batch Save 10 Landing Pages` to save all 10 ideas, passing their slugs and HTML strings.\n"
     ),
     expected_output="Confirmation that all 10 index.html pages were rendered with full copy and saved to GitHub.",
     agent=developer_agent
