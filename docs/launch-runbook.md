@@ -27,6 +27,7 @@ outbound or money-touching action waits for a human.
    `oxbench.com`, `larchbench.com`, `tealbench.com`, `finchbench.com`,
    `heronbench.com`, `kestrelbench.com`, `rookbench.com`, `tallbench.com`,
    `basaltbench.com`, `larchstack.com`, `larchtools.com`.
+   Decision: domain selected assuming its availability. Refer to domain-selection.md
 2. **Accounts (all free tier):** Cloudflare, Supabase, Resend, Stripe (test mode).
    Copy `.env.example` to `.env` and fill it in.
 3. **Database + functions:**
