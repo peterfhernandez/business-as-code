@@ -51,7 +51,7 @@ GITHUB_REPO=your-username/your-repo-name
 ## 🚀 Execution Workflow
 
 ### Phase 1: Scrape Ideas & Build Landing Pages
-Runs the **Idea Hunter**, **Developer**, and **QA Auditor** agents. It scrapes Reddit, Hacker News, and Product Hunt for real user pain points, picks 10 distinct SaaS concepts, renders full Tailwind CSS landing pages, and commits them to `ideas/<slug>/index.html`.
+Runs the **Idea Hunter**, **Developer**, and **QA Auditor** agents. It scrapes Reddit, Hacker News, and Product Hunt for real user pain points, picks 10 distinct SaaS concepts, renders full Tailwind CSS landing pages, and commits them to `ideas/<slug>/index.html` on GitHub (saving locally only if the upload fails).
 
 ```powershell
 python .\ideas-scraper.py
@@ -73,7 +73,11 @@ To prevent incomplete code or token limit truncations during automated generatio
 * **Placeholder Rejection:** Rejects files containing placeholder HTML comments (e.g., `<!-- TODO -->` or `<!-- Full HTML here -->`). Section labels such as `<!-- Hero Section -->` are allowed.
 * **Truncation Check:** Rejects pages missing `</html>`, the Tailwind CDN, a waitlist `<form>`, pricing or FAQ.
 * **Self-Correction:** Each landing page is its own CrewAI task with a `guardrail`. When QA fails, the developer agent is re-prompted with the exact problems (up to `PAGE_GUARDRAIL_RETRIES` times).
-* **Deterministic Saves:** Pages that pass are written to `ideas/<slug>/index.html` (and committed to GitHub when `GITHUB_TOKEN` and `GITHUB_REPO` are set) by Python, not by an agent tool call. One failed page does not stop the rest.
-* **Real QA Audit:** The QA agent inspects the actual files on disk through the `Inspect Ideas Directory` tool, and the run ends with a per-idea build report.
+* **Deterministic Saves:** Pages that pass are saved by Python, not by an agent tool call, to exactly **one** place:
+  1. **GitHub first** - committed to `ideas/<slug>/index.html` in `GITHUB_REPO` through the API.
+  2. **Local fallback** - written to the local `ideas/<slug>/index.html` only if `GITHUB_TOKEN`/`GITHUB_REPO` are missing or the upload fails.
+
+  A page is never written to both, so your local checkout never conflicts with the commits pushed by the API. Run `git pull` to get the pages locally (e.g. before `validate-ideas.py`). One failed page does not stop the rest.
+* **Real QA Audit:** The QA agent inspects the saved pages on GitHub, plus any local fallback pages, through the `Inspect Ideas Directory` tool, and the run ends with a per-idea build report.
 
 Optional: set `LLM_MAX_TOKENS` in `.env` (default `16000`) if pages are being cut off before `</html>`.
