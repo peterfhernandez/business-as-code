@@ -1,0 +1,21 @@
+name: Onboarding drip
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+jobs:
+  drip:
+    runs-on: ubuntu-latest
+    # Skipped until the FUNCTIONS_URL repository variable and CRON_SECRET
+    # secret are set. Sending is further gated by DRIP_ENABLED on the function.
+    if: ${{ vars.FUNCTIONS_URL != '' }}
+    steps:
+      - name: Run onboarding drip
+        env:
+          FUNCTIONS_URL: ${{ vars.FUNCTIONS_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -fsS -X POST "$FUNCTIONS_URL/onboarding-drip" \
+            -H "x-cron-secret: $CRON_SECRET"
