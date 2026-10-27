@@ -122,7 +122,7 @@ def scrape_product_hunt_quality() -> str:
         return f"Error scraping Product Hunt: {str(e)}"
 
 # ---------------------------------------------------------------------------
-# 2. VALIDATION & SAVE (plain Python - the save no longer depends on an agent choosing to call a tool)
+# 2. VALIDATION & SAVE (plain Python - GitHub first, local only as a fallback)
 # ---------------------------------------------------------------------------
 
 # Matches one HTML comment at a time (non-greedy, may span lines) so `<!-- Hero -->` ... `-->` is never
@@ -193,12 +193,47 @@ def validate_html(html_content: str) -> list[str]:
     return problems
 
 
+def get_github_repo():
+    """Returns the PyGithub repo for GITHUB_REPO, or None when GITHUB_TOKEN / GITHUB_REPO are not set."""
+    github_token = os.getenv("GITHUB_TOKEN")
+    github_repo_name = os.getenv("GITHUB_REPO")
+    if not github_token or not github_repo_name:
+        return None
+    return Github(github_token).get_repo(github_repo_name)
+
+
 def save_landing_page(folder_name: str, html_content: str) -> str:
-    """Writes ideas/<slug>/index.html locally, then commits it to GitHub when credentials are present."""
+    """
+    Saves ideas/<slug>/index.html to exactly ONE place:
+    - GitHub first (committed through the API).
+    - The local `ideas/` folder only if GitHub is not configured or the upload fails.
+    Writing to both would leave the local checkout out of step with GitHub and cause merge conflicts.
+    """
     clean_slug = sanitize_slug(folder_name)
     if not clean_slug:
         return f"FAILED: folder name '{folder_name}' does not produce a usable slug."
 
+    repo_file_path = f"ideas/{clean_slug}/index.html"
+    commit_message = f"Add landing page for: {clean_slug}"
+    try:
+        repo = get_github_repo()
+        if repo is None:
+            github_error = "GITHUB_TOKEN or GITHUB_REPO not set"
+        else:
+            try:
+                contents = repo.get_contents(repo_file_path)
+                repo.update_file(contents.path, commit_message, html_content, contents.sha)
+                status_msg = "updated existing file"
+            except GithubException as e:
+                if e.status != 404:
+                    raise
+                repo.create_file(repo_file_path, commit_message, html_content)
+                status_msg = "created new file"
+            return f"Saved to GitHub {repo.full_name}/{repo_file_path} ({status_msg})."
+    except Exception as e:
+        github_error = f"GitHub upload failed: {e}"
+
+    # Fallback: GitHub is unavailable, so keep the page locally instead of losing it.
     local_dir = os.path.join(IDEAS_DIR, clean_slug)
     local_file_path = os.path.join(local_dir, "index.html")
     try:
@@ -206,29 +241,8 @@ def save_landing_page(folder_name: str, html_content: str) -> str:
         with open(local_file_path, "w", encoding="utf-8") as f:
             f.write(html_content)
     except OSError as e:
-        return f"FAILED: could not write {local_file_path}: {e}"
-
-    github_token = os.getenv("GITHUB_TOKEN")
-    github_repo_name = os.getenv("GITHUB_REPO")
-    if not github_token or not github_repo_name:
-        return f"Saved locally to {local_file_path} (GitHub sync skipped: GITHUB_TOKEN or GITHUB_REPO not set)."
-
-    repo_file_path = f"ideas/{clean_slug}/index.html"
-    commit_message = f"Add landing page for: {clean_slug}"
-    try:
-        repo = Github(github_token).get_repo(github_repo_name)
-        try:
-            contents = repo.get_contents(repo_file_path)
-            repo.update_file(contents.path, commit_message, html_content, contents.sha)
-            status_msg = "updated existing file"
-        except GithubException as e:
-            if e.status != 404:
-                raise
-            repo.create_file(repo_file_path, commit_message, html_content)
-            status_msg = "created new file"
-        return f"Saved locally to {local_file_path} and synced to GitHub {github_repo_name}/{repo_file_path} ({status_msg})."
-    except Exception as e:
-        return f"Saved locally to {local_file_path}, but GitHub sync failed: {e}"
+        return f"FAILED: {github_error}, and could not write local fallback {local_file_path}: {e}"
+    return f"Saved locally to {local_file_path} as a fallback ({github_error})."
 
 
 def landing_page_guardrail(output: TaskOutput) -> tuple[bool, str]:
@@ -240,24 +254,59 @@ def landing_page_guardrail(output: TaskOutput) -> tuple[bool, str]:
     return True, html_content
 
 
+def describe_page(name: str, html_content: str) -> str:
+    problems = validate_html(html_content)
+    status = "PASS" if not problems else "FAIL: " + " | ".join(problems)
+    return f"- {name}: {len(html_content.encode('utf-8'))} bytes - {status}"
+
+
 @tool("Inspect Ideas Directory")
 def inspect_ideas_directory() -> str:
-    """Reads the local `ideas/` directory and reports every `index.html` with its size and QA result."""
-    if not os.path.isdir(IDEAS_DIR):
-        return f"No `ideas/` directory found at {IDEAS_DIR}."
+    """
+    Reports every `ideas/<slug>/index.html` with its size and QA result: first the pages on GitHub,
+    then any local fallback pages that were saved because the GitHub upload failed.
+    """
+    sections = []
+    github_slugs = set()
+
+    try:
+        repo = get_github_repo()
+    except Exception as e:
+        repo = None
+        sections.append(f"GitHub: could not connect ({e}).")
+    if repo is not None:
+        lines = []
+        try:
+            folders = [c for c in repo.get_contents("ideas") if c.type == "dir"]
+        except GithubException as e:
+            folders = []
+            if e.status != 404:
+                lines.append(f"- could not list `ideas/`: {e}")
+        for folder in sorted(folders, key=lambda c: c.name):
+            github_slugs.add(folder.name)
+            try:
+                page = repo.get_contents(f"{folder.path}/index.html")
+                lines.append(describe_page(folder.name, page.decoded_content.decode("utf-8")))
+            except GithubException:
+                lines.append(f"- {folder.name}: MISSING index.html")
+        sections.append(f"GitHub {repo.full_name} - {len(folders)} folder(s) in `ideas/`:\n" + "\n".join(lines))
+    elif not sections:
+        sections.append("GitHub: not configured (GITHUB_TOKEN or GITHUB_REPO not set).")
+
+    # Local pages that are not on GitHub are fallbacks from failed uploads.
     lines = []
-    for folder in sorted(os.listdir(IDEAS_DIR)):
-        if not os.path.isdir(os.path.join(IDEAS_DIR, folder)):
-            continue  # e.g. ideas_validation_report.md written by validate-ideas.py
-        page = os.path.join(IDEAS_DIR, folder, "index.html")
-        if not os.path.isfile(page):
-            lines.append(f"- {folder}: MISSING index.html")
-            continue
-        with open(page, encoding="utf-8") as f:
-            problems = validate_html(f.read())
-        status = "PASS" if not problems else "FAIL: " + " | ".join(problems)
-        lines.append(f"- {folder}: {os.path.getsize(page)} bytes - {status}")
-    return f"{len(lines)} folder(s) in {IDEAS_DIR}:\n" + "\n".join(lines) if lines else "The `ideas/` directory is empty."
+    if os.path.isdir(IDEAS_DIR):
+        for folder in sorted(os.listdir(IDEAS_DIR)):
+            if folder in github_slugs or not os.path.isdir(os.path.join(IDEAS_DIR, folder)):
+                continue
+            page = os.path.join(IDEAS_DIR, folder, "index.html")
+            if not os.path.isfile(page):
+                lines.append(f"- {folder}: MISSING index.html")
+                continue
+            with open(page, encoding="utf-8") as f:
+                lines.append(describe_page(folder, f.read()))
+    sections.append(f"Local fallback pages not on GitHub - {len(lines)} folder(s) in {IDEAS_DIR}:\n" + ("\n".join(lines) or "- none"))
+    return "\n\n".join(sections)
 
 # ---------------------------------------------------------------------------
 # 3. STRUCTURED HAND-OFF BETWEEN RESEARCH AND BUILD
@@ -300,8 +349,8 @@ developer_agent = Agent(
 
 qa_auditor = Agent(
     role="Quality Assurance Inspector",
-    goal="Verify from the real files on disk that every folder in `ideas/` contains a full, valid landing page.",
-    backstory="You never assume a file exists - you inspect the `ideas/` directory with your tool and report exactly what is there.",
+    goal="Verify from the real saved files (GitHub, plus any local fallbacks) that every idea has a full, valid landing page.",
+    backstory="You never assume a file exists - you inspect the saved pages with your tool and report exactly what is there.",
     tools=[inspect_ideas_directory],
     llm=grok_llm,
     verbose=True
