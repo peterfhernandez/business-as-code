@@ -75,27 +75,26 @@ Checked without signing in, so a suspended, reserved or recently deleted handle 
 
 ### Additional Instagram handle
 
-`@heronbench` stays the main account. One more handle is worth claiming, either as a second account (for example, a build-in-public or product account) or just to stop someone else taking a lookalike.
+`@heronbench` is the main account. A second handle is only worth having if it will actually be used for a separate account, such as a build-in-public or product account. Instagram reclaims usernames from accounts that stay inactive (see [TechCrunch, 2014](https://techcrunch.com/2014/04/16/instagram-reassigned-inactive-kathleen-username-to-an-employee-but-will-give-it-back/)). A spare handle held only to block lookalikes may not stay ours. Holding the `HERONBENCH` trade mark is the stronger protection against impersonation.
 
-Instagram usernames can use letters, numbers, periods and underscores, up to 30 characters. They can't start or end with a period or have two periods in a row. One login can switch between up to five accounts, so the extra handle can sit under the same login as `@heronbench`.
+Username rules (from third-party guides, not Instagram's own wording): letters, numbers, periods and underscores, up to 30 characters, no period at the start or end, and no two periods in a row. Usernames are not case-sensitive.
 
-| # | Handle | Use | Notes |
-|---|--------|-----|-------|
-| 1 | `@heronbench.studio` | Second account | Recommended. Says "studio", which the bare name doesn't, and matches the positioning. |
-| 2 | `@heron.bench` | Defensive | The most likely lookalike of the main handle. Claim it and point the bio at `@heronbench`. |
-| 3 | `@heronbench.dev` | Second account | Better if the account will post code and dev content. Pairs with a `heronbench.dev` domain. |
-| 4 | `@heronbench.au` | Second account | Only if an Australia-specific account is wanted. |
-| 5 | `@heronbenchhq` | Second account | Common pattern, but the double "h" reads badly. |
+| # | Handle | Notes |
+|---|--------|-------|
+| 1 | `@heronbench.studio` | Recommended. Adds "studio", which the bare name doesn't say. |
+| 2 | `@heronbench.dev` | If the account will mostly post code and developer content. |
+| 3 | `@heronbench.au` | Only if there will be an Australia-specific account. |
 
-Availability for these was **not checked**: Instagram rate-limited the check (HTTP 429). Check each one in the app while signing up.
+Availability was **not checked**. Instagram returned HTTP 429 (rate limited) when checked on 2026-10-30. The sign-up screen shows whether a username is taken.
 
-Steps:
+How to create it, from the account that is already signed in as `@heronbench`. Menu names vary between app versions, and Meta is moving some people from Accounts Center to "Meta Account" settings:
 
-1. Create `@heronbench` first.
-2. In the app, go to Profile, tap the username, then **Add Instagram account** > **Create new account**.
-3. Enter `@heronbench.studio`. If it's taken, try the next one in the table.
-4. If the extra handle is only defensive, set it to private, add the bio "Official account: @heronbench" and link `heronbench.com`.
-5. Turn on two-factor authentication for both accounts.
+1. Open the Instagram app and go to your profile.
+2. Tap your username at the top of the screen, then **Add account** (may show as **Add Instagram account**).
+3. Tap **Create new account**.
+4. Enter the new username. If it's taken, try the next handle in the table.
+5. Choose whether to add the new account to the same Accounts Center as `@heronbench`. [Instagram's help page](https://www.facebook.com/help/instagram/155940534568753) says an account created from an existing one goes into the same Accounts Center. This lets you sign in to either account from the other. Guides disagree on whether a separate email or phone number is needed in this flow. If one is asked for, use a shared studio address (for example `hello@heronbench.com`) rather than a personal one.
+6. Switch accounts by tapping the username at the top of your profile. The app lets you add up to five accounts.
 
 ### Trademark: IP Australia (Australian Trade Mark Search)
 
@@ -122,7 +121,7 @@ Conclusion: no blocking conflict found, with a low-to-moderate watch item on `HE
 
 - [ ] Register `heronbench.com` (and consider `.com.au` and `.dev`).
 - [ ] Claim the GitHub org, npm scope, X, Instagram, LinkedIn, YouTube and Bluesky handles listed above.
-- [ ] Claim an additional Instagram handle (`@heronbench.studio`, or the next free one in the table above).
+- [ ] Create the second Instagram account (`@heronbench.studio`, or the next free handle in the table above) once there is a plan to post from it.
 - [ ] Check Reddit manually.
 - [ ] Review the remaining 76 `heron*` IP Australia results (page 2).
 - [ ] Search the US register (USPTO) and other target markets. Not done.
