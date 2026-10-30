@@ -87,14 +87,24 @@ Username rules (from third-party guides, not Instagram's own wording): letters, 
 
 Availability was **not checked**. Instagram returned HTTP 429 (rate limited) when checked on 2026-10-30. The sign-up screen shows whether a username is taken.
 
-How to create it, from the account that is already signed in as `@heronbench`. Menu names vary between app versions, and Meta is moving some people from Accounts Center to "Meta Account" settings:
+How to create a studio account (`@heronbench` first, then any second handle) when you're already signed in to a personal Instagram account. Menu names vary between versions, and Meta is moving some people from Accounts Center to "Meta Account" settings.
 
-1. Open the Instagram app and go to your profile.
-2. Tap your username at the top of the screen, then **Add account** (may show as **Add Instagram account**).
-3. Tap **Create new account**.
-4. Enter the new username. If it's taken, try the next handle in the table.
-5. Choose whether to add the new account to the same Accounts Center as `@heronbench`. [Instagram's help page](https://www.facebook.com/help/instagram/155940534568753) says an account created from an existing one goes into the same Accounts Center. This lets you sign in to either account from the other. Guides disagree on whether a separate email or phone number is needed in this flow. If one is asked for, use a shared studio address (for example `hello@heronbench.com`) rather than a personal one.
-6. Switch accounts by tapping the username at the top of your profile. The app lets you add up to five accounts.
+On a computer (instagram.com). Tapping your username here opens "About your profile", not an account menu:
+
+1. Open a private/incognito browser window so the personal account stays signed in.
+2. Go to `https://www.instagram.com/accounts/emailsignup/`.
+3. Sign up with an email address that isn't used by the personal account. `heronbench.com` isn't registered yet, so a `hello@heronbench.com` address won't work until it is.
+4. Enter `heronbench` as the username. The form says if it's taken.
+5. Afterwards, add both accounts to the phone app (below) to switch between them.
+
+On a phone (Instagram app):
+
+1. Open the app and tap your profile picture (bottom right).
+2. Tap your username at the top of the screen. In the app this opens the account switcher.
+3. Tap **Add account** (may show as **Add Instagram account**), then **Create new account**. To add an account that already exists, tap **Log into existing account** instead.
+4. Enter the new username and finish sign-up.
+5. When asked, add the new account to the same Accounts Center as the personal account. [Instagram's help page](https://www.facebook.com/help/instagram/155940534568753) says an account created from an existing one goes into the same Accounts Center. That lets you switch accounts without signing in again. It also connects the studio account to your personal one inside Meta; skip this step if you want them kept apart.
+6. To switch accounts, tap your username at the top of your profile. The app lets you add up to five accounts.
 
 ### Trademark: IP Australia (Australian Trade Mark Search)
 
