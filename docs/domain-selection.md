@@ -73,6 +73,30 @@ Checked without signing in, so a suspended, reserved or recently deleted handle 
 | Bluesky | `heronbench.bsky.social` | Free (profile not found) |
 | Reddit | `u/heronbench` | Not checked (site blocked in the browser used) |
 
+### Additional Instagram handle
+
+`@heronbench` stays the main account. One more handle is worth claiming, either as a second account (for example, a build-in-public or product account) or just to stop someone else taking a lookalike.
+
+Instagram usernames can use letters, numbers, periods and underscores, up to 30 characters. They can't start or end with a period or have two periods in a row. One login can switch between up to five accounts, so the extra handle can sit under the same login as `@heronbench`.
+
+| # | Handle | Use | Notes |
+|---|--------|-----|-------|
+| 1 | `@heronbench.studio` | Second account | Recommended. Says "studio", which the bare name doesn't, and matches the positioning. |
+| 2 | `@heron.bench` | Defensive | The most likely lookalike of the main handle. Claim it and point the bio at `@heronbench`. |
+| 3 | `@heronbench.dev` | Second account | Better if the account will post code and dev content. Pairs with a `heronbench.dev` domain. |
+| 4 | `@heronbench.au` | Second account | Only if an Australia-specific account is wanted. |
+| 5 | `@heronbenchhq` | Second account | Common pattern, but the double "h" reads badly. |
+
+Availability for these was **not checked**: Instagram rate-limited the check (HTTP 429). Check each one in the app while signing up.
+
+Steps:
+
+1. Create `@heronbench` first.
+2. In the app, go to Profile, tap the username, then **Add Instagram account** > **Create new account**.
+3. Enter `@heronbench.studio`. If it's taken, try the next one in the table.
+4. If the extra handle is only defensive, set it to private, add the bio "Official account: @heronbench" and link `heronbench.com`.
+5. Turn on two-factor authentication for both accounts.
+
 ### Trademark: IP Australia (Australian Trade Mark Search)
 
 | Search | Result |
@@ -98,6 +122,7 @@ Conclusion: no blocking conflict found, with a low-to-moderate watch item on `HE
 
 - [ ] Register `heronbench.com` (and consider `.com.au` and `.dev`).
 - [ ] Claim the GitHub org, npm scope, X, Instagram, LinkedIn, YouTube and Bluesky handles listed above.
+- [ ] Claim an additional Instagram handle (`@heronbench.studio`, or the next free one in the table above).
 - [ ] Check Reddit manually.
 - [ ] Review the remaining 76 `heron*` IP Australia results (page 2).
 - [ ] Search the US register (USPTO) and other target markets. Not done.
