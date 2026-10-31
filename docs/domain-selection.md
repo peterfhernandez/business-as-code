@@ -65,7 +65,7 @@ Checked without signing in, so a suspended, reserved or recently deleted handle 
 | Platform | Handle | Result |
 |----------|--------|--------|
 | GitHub | `github.com/heronbench` | Free (404) |
-| npm | `~heronbench` | Free (scope not found) |
+| npm | `@heronbench` (org) | Claimed 2026-10-31 as a free org (`npmjs.com/org/heronbench`) |
 | X | `@heronbench` | Free ("account doesn't exist") |
 | Instagram | `@heronbench` | Free ("profile isn't available") |
 | LinkedIn | `/company/heronbench` | Free (page not found) |
@@ -97,7 +97,9 @@ Conclusion: no blocking conflict found, with a low-to-moderate watch item on `HE
 ## Not checked / next steps
 
 - [ ] Register `heronbench.com` (and consider `.com.au` and `.dev`).
-- [ ] Claim the GitHub org, npm scope, X, Instagram, LinkedIn, YouTube and Bluesky handles listed above.
+- [x] Claim the npm org `@heronbench` (done 2026-10-31).
+- [ ] Add a second owner to the npm org once one is available, so access does not depend on a single account.
+- [ ] Claim the GitHub org, X, Instagram, LinkedIn, YouTube and Bluesky handles listed above.
 - [ ] Check Reddit manually.
 - [ ] Review the remaining 76 `heron*` IP Australia results (page 2).
 - [ ] Search the US register (USPTO) and other target markets. Not done.
