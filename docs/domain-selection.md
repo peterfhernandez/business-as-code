@@ -62,16 +62,16 @@ Caveats:
 
 Checked without signing in, so a suspended, reserved or recently deleted handle may not show up.
 
-| Platform | Handle | Result |
-|----------|--------|--------|
-| GitHub | `github.com/heronbench` | Free (404) |
-| npm | `~heronbench` | Free (scope not found) |
-| X | `@heronbench` | Free ("account doesn't exist") |
-| Instagram | `@heronbench` | Free ("profile isn't available") |
-| LinkedIn | `/company/heronbench` | Free (page not found) |
-| YouTube | `@heronbench` | Free (404) |
-| Bluesky | `heronbench.bsky.social` | Free (profile not found) |
-| Reddit | `u/heronbench` | Not checked (site blocked in the browser used) |
+| Platform | Handle | Result | Secured |
+|----------|--------|--------|---------|
+| GitHub | `github.com/heronbench` | Free (404) | Yes |
+| npm | `~heronbench` | Free (scope not found) | Yes |
+| X | `@heronbench` | Free ("account doesn't exist") | Yes |
+| Instagram | `@heronbench` | Free ("profile isn't available") | Yes |
+| LinkedIn | `/company/heronbench` | Free (page not found) | Yes |
+| YouTube | `@heronbench` | Free (404) | Yes |
+| Bluesky | `heronbench.bsky.social` | Free (profile not found) | Yes |
+| Reddit | `u/heronbench` | Not checked (site blocked in the browser used) | Yes |
 
 ### Trademark: IP Australia (Australian Trade Mark Search)
 
